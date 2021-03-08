@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "430526754321",
+    "project_id": "devhub-c95ad",
+    "storage_bucket": "devhub-c95ad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:430526754321:android:22d2e849fe729d46b18bb0",
+        "android_client_info": {
+          "package_name": "com.example.devhub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "430526754321-ou07mqj9q1mceb9sasen7o1djfh05glr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIuBqL7_8P1r2zWu530e4xnWPoQ83SKy0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "430526754321-ou07mqj9q1mceb9sasen7o1djfh05glr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
