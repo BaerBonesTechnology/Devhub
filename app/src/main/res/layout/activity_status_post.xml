@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2c2c2c"
+    tools:context=".status_post">
+
+
+    <Button
+        android:id="@+id/status_post_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Post"
+        app:backgroundTint="#2C8500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.899"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.976" />
+
+    <Button
+        android:id="@+id/pictureAddButton"
+        android:layout_width="378dp"
+        android:layout_height="47dp"
+        android:layout_marginBottom="464dp"
+        android:drawableRight="@android:drawable/ic_menu_gallery"
+        android:editable="false"
+        android:fontFamily="@font/poppins_semibold"
+        android:gravity="top|center_vertical"
+        android:hint="Tell us about your new projects"
+        android:text="Add a photo"
+        app:backgroundTint="#202020"
+        app:layout_constraintBottom_toTopOf="@+id/status_post_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.578"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postEdit" />
+
+    <EditText
+        android:id="@+id/postEdit"
+        android:layout_width="377dp"
+        android:layout_height="132dp"
+        android:background="#1C1C1C"
+        android:editable="true"
+        android:ems="10"
+        android:fontFamily="@font/poppins_semibold"
+        android:gravity="start|top"
+        android:hint="Tell us about your new project"
+        android:inputType="textMultiLine"
+        android:textColor="#D3D3D3"
+        android:textColorHint="#636363"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.589"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.043" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

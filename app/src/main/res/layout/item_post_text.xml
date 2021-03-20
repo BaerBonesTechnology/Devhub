@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2c2c2c"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/postUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="_Username"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/dateCreated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="made at sometime"
+        android:textColor="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/postDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lorem Ipsum"
+        android:textColor="@color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/doots"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="124dp"
+            android:layout_height="wrap_content"
+            android:text="Doot" />
+
+        <Button
+            android:id="@+id/comments"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="151dp"
+            android:layout_height="wrap_content"
+            android:text="Comment" />
+
+        <Button
+            android:id="@+id/Share"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Share" />
+    </LinearLayout>
+
+</LinearLayout>
