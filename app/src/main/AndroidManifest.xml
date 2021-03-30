@@ -9,12 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Devhub">
+        <activity android:name=".NotePad"></activity>
+        <activity android:name=".CodingNotes" />
         <activity
             android:name=".profile_page"
             android:label="@string/title_activity_profile_page"
-            android:theme="@style/Theme.Devhub.NoActionBar"/>
+            android:theme="@style/Theme.Devhub.NoActionBar" />
         <activity
-            android:name=".status_post"
+            android:name=".Status_post"
             android:label="@string/title_activity_status_post"
             android:theme="@style/Theme.Devhub.NoActionBar" />
         <activity

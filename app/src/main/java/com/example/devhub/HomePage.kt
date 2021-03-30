@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.devhub.Model.Posts
@@ -40,6 +39,7 @@ open class HomePage : AppCompatActivity() {
         //TODO: Bind Adapter and layout manager to the RV
         postFeed.adapter = adapter
         postFeed.layoutManager = LinearLayoutManager(this)
+
 
 
         // make a query to firestore to gather posts
@@ -102,7 +102,7 @@ open class HomePage : AppCompatActivity() {
 
         Post_Btn.setOnClickListener {
             //TODO: create UI for adding post
-            val intent = Intent(this, status_post::class.java)
+            val intent = Intent(this, Status_post::class.java)
             startActivity(intent)
             //TODO: create adapter to save in firebase
             //TODO: return to home page
@@ -113,13 +113,13 @@ open class HomePage : AppCompatActivity() {
             startActivity(intent)
         }
 
-        menu_profile.setOnClickListener {
+        nav_Profile.setOnClickListener {
             val intent = Intent(this, profile_page::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             startActivity(intent)
 
         }
-        home_btn.setOnClickListener {
+        nav_Home.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }

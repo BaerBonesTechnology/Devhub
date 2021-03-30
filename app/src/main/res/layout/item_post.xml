@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/itemView"
+    android:id="@+id/PostView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#2c2c2c"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/rounded_corners"
     android:orientation="vertical">
 
     <TextView
@@ -15,7 +16,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:background="#2c2c2c"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#202020"
         android:text="_Username"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
@@ -26,15 +29,21 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:autoLink="web"
+        android:background="#202020"
         android:text="Lorem Ipsum"
         android:textColor="@color/white" />
 
     <ImageView
         android:id="@+id/PostImage"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="350dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
         android:scaleType="centerCrop"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
@@ -44,22 +53,34 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#202020"
         android:text="1d ago"
         android:textColor="@android:color/darker_gray" />
 
+    <TextView
+        android:id="@+id/DootsView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/doots2"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="124dp"
+            android:layout_width="98dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_weight="1"
-            android:text="Doot" />
+            android:background="#202020"
+            android:text="Doot"
+            app:backgroundTint="#202020" />
 
         <Button
             android:id="@+id/comments2"
@@ -67,15 +88,21 @@
             android:layout_width="151dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Comment" />
+            android:background="#202020"
+            android:text="Comment"
+            app:backgroundTint="#202020" />
 
         <Button
             android:id="@+id/share"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
-            android:text="Share" />
+            android:background="#202020"
+            android:text="Share"
+            app:backgroundTint="#202020" />
 
     </LinearLayout>
 

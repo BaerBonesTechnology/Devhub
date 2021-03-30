@@ -1,5 +1,6 @@
 package com.example.devhub
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -14,6 +15,8 @@ class PostAdapter(val context: Context, val posts: List<Posts>):
     RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+        @SuppressLint("SetTextI18n")
         fun bind(post: Posts){
             itemView.username.text = "_${post.user?.username}"
             itemView.PostDesc.text = post.description
@@ -26,7 +29,13 @@ class PostAdapter(val context: Context, val posts: List<Posts>):
                 Glide.with(context).load(post.image_url).into(itemView.PostImage)
             }
             itemView.datePosted.text = DateUtils.getRelativeTimeSpanString(post.creation_time)
+
+            if(post.doots != 0){
+                itemView.DootsView.text = "${post.doots} doots"
+            }
         }
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,5 +48,7 @@ class PostAdapter(val context: Context, val posts: List<Posts>):
     }
 
     override fun getItemCount() = posts.size
+
+
 
 }

@@ -14,7 +14,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_home_page.*
+import kotlinx.android.synthetic.main.activity_home_page.LogoutBtn
+import kotlinx.android.synthetic.main.activity_home_page.Post_Btn
+import kotlinx.android.synthetic.main.activity_home_page.homeLogo
+import kotlinx.android.synthetic.main.activity_home_page.postFeed
+import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.item_post.*
+import kotlinx.android.synthetic.main.activity_home_page.nav_Home as nav_Home
+import kotlinx.android.synthetic.main.activity_profile.nav_Profile as nav_Profile
 
 private var signedInUser: Users? = null
 private const val TAG = "Post:"
@@ -52,7 +59,7 @@ class profile_page : AppCompatActivity()
             .get()
             .addOnSuccessListener { userSnapshot ->
                 signedInUser = userSnapshot.toObject(Users::class.java)
-                usernameView.text = " ${signedInUser?.username} User Posts:${signedInUser?.posts}"
+                usernameView.text = "_${signedInUser?.username} \n User Posts:${signedInUser?.posts}"
                 Log.i(TAG, " signed in user: $signedInUser")
 
             }
@@ -104,7 +111,7 @@ class profile_page : AppCompatActivity()
 
         Post_Btn.setOnClickListener {
             //TODO: create UI for adding post
-            val intent = Intent(this, status_post::class.java)
+            val intent = Intent(this, Status_post::class.java)
             startActivity(intent)
             //TODO: create adapter to save in firebase
             //TODO: return to home page
@@ -115,13 +122,13 @@ class profile_page : AppCompatActivity()
             startActivity(intent)
         }
 
-        menu_profile.setOnClickListener {
+        nav_Profile.setOnClickListener {
             val intent = Intent(this, profile_page::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             startActivity(intent)
 
         }
-        home_btn.setOnClickListener {
+        nav_Home.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }

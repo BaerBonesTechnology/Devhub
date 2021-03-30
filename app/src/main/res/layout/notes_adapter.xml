@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/NotesPost"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_corners"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txtNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:editable="false"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Name Here"
+        android:textColor="#006400"
+        android:textSize="26sp" />
+
+    <TextView
+        android:id="@+id/txt_dateLastUpdated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:editable="false"
+        android:fontFamily="@font/poppins_semibold"
+        android:gravity="right"
+        android:text="LastUpdatedHere"
+        android:textColor="#FFF"
+        android:textSize="18sp" />
+
+</LinearLayout>
