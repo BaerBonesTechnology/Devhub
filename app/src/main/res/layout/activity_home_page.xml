@@ -12,10 +12,10 @@
         android:id="@+id/searchView2"
         android:layout_width="211dp"
         android:layout_height="31dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:background="#3E3E3E"
         app:layout_constraintEnd_toStartOf="@+id/LogoutBtn"
-        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintHorizontal_bias="0.543"
         app:layout_constraintStart_toEndOf="@+id/homeLogo"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -23,13 +23,15 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postFeed"
-        android:layout_width="383dp"
-        android:layout_height="682dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomNavigationView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView2">
+        app:layout_constraintTop_toBottomOf="@+id/photoButton"
+        tools:itemCount="11"
+        tools:listitem="@layout/recycler_view_item_3">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -41,10 +43,10 @@
         android:text="@string/logov2"
         android:textColor="#B7C3B8"
         android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/emailLogin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.12"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/newPostString"
+        app:layout_constraintEnd_toStartOf="@+id/LogoutBtn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/logoBlink"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -66,22 +68,24 @@
         android:id="@+id/logoBlink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:fontFamily="@font/poppins_semibold"
         android:text="@string/Logop1"
         android:textColor="#4AAC24"
         android:textSize="32sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-        app:layout_constraintEnd_toStartOf="@+id/homeLogo" />
+        app:layout_constraintBottom_toTopOf="@+id/newPostString"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/homeLogo"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView2"
         android:layout_width="0dp"
         android:layout_height="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postFeed"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -102,7 +106,7 @@
                 tools:ignore="HardcodedText" />
 
             <Button
-                android:id="@+id/nav_Coding"
+                android:id="@+id/nav_Coding1"
                 android:layout_width="33dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="44dp"
@@ -119,12 +123,12 @@
                 android:layout_height="31dp"
                 android:background="@drawable/ic_home"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/nav_Coding"
+                app:layout_constraintEnd_toStartOf="@+id/nav_Coding1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/nav_Notifications"
+                android:id="@+id/nav_Notifs"
                 android:layout_width="33dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="44dp"
@@ -144,12 +148,81 @@
                 android:background="@drawable/ic_profile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/nav_Notifications"
+                app:layout_constraintStart_toEndOf="@+id/nav_Notifs"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.463" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+    <EditText
+        android:id="@+id/newPostString"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_corners"
+        android:ems="10"
+        android:fontFamily="@font/poppins_light"
+        android:gravity="start|top"
+        android:hint="@string/PostHint"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView2"
+        app:layout_constraintEnd_toStartOf="@+id/Post_Button"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView2"
+        app:layout_constraintVertical_bias="0.029" />
+
+    <ImageButton
+        android:id="@+id/Post_Button"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/rounded_button"
+        android:contentDescription="@string/buttonHintPost"
+        app:layout_constraintBottom_toBottomOf="@+id/newPostString"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LogoutBtn"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@android:drawable/ic_menu_send" />
+
+    <Button
+        android:id="@+id/photoButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:drawableStart="@android:drawable/ic_menu_gallery"
+        android:drawableLeft="@android:drawable/ic_menu_gallery"
+        android:text="Add a photo"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postImage" />
+
+    <ImageView
+        android:id="@+id/postImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:contentDescription="post Image"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newPostString"
+        tools:srcCompat="@tools:sample/avatars" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

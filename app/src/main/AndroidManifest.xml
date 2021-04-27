@@ -8,17 +8,32 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Devhub">
-        <activity android:name=".NotePad"></activity>
-        <activity android:name=".CodingNotes" />
+        android:theme="@style/Theme.Design"
+        android:fullBackupContent="@xml/backup_descriptor">
         <activity
-            android:name=".profile_page"
+            android:name=".Notifications"
+            android:label="@string/title_activity_notifications"
+            android:theme="@style/Theme.Design.NoActionBar" />
+        <activity
+            android:name=".ProfileSettings"
+            android:theme = "@style/Theme.Design.NoActionBar"/>
+        <activity
+            android:name=".ClickedPost"
+            android:theme = "@style/Theme.Design.NoActionBar"/>
+        <activity
+            android:name=".NotePad"
+            android:theme="@style/Theme.Design.NoActionBar" />
+        <activity
+            android:name=".CodingNotes"
+            android:theme="@style/Theme.Design.NoActionBar" />
+        <activity
+            android:name=".ProfilePage"
             android:label="@string/title_activity_profile_page"
-            android:theme="@style/Theme.Devhub.NoActionBar" />
+            android:theme="@style/Theme.Design.NoActionBar" />
         <activity
-            android:name=".Status_post"
+            android:name=".StatusPost"
             android:label="@string/title_activity_status_post"
-            android:theme="@style/Theme.Devhub.NoActionBar" />
+            android:theme="@style/Theme.Design.NoActionBar" />
         <activity
             android:name=".HomePage"
             android:theme="@style/Theme.Design.NoActionBar" />

@@ -40,7 +40,6 @@
         android:layout_height="583dp"
         android:layout_marginBottom="72dp"
         android:background="@drawable/rounded_corners"
-        android:editable="true"
         android:ems="10"
         android:fontFamily="@font/poppins_semibold"
         android:gravity="start|top"

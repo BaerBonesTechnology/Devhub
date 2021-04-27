@@ -41,11 +41,12 @@
         android:text="@string/logov2"
         android:textColor="#B7C3B8"
         android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/emailLogin"
+        app:layout_constraintBottom_toTopOf="@+id/usernameView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.12"
+        app:layout_constraintHorizontal_bias="0.119"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/LogoutBtn"
@@ -70,8 +71,12 @@
         android:text="@string/Logop1"
         android:textColor="#4AAC24"
         android:textSize="32sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-        app:layout_constraintEnd_toStartOf="@+id/homeLogo" />
+        app:layout_constraintBottom_toTopOf="@+id/usernameView"
+        app:layout_constraintEnd_toStartOf="@+id/homeLogo"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="0dp"
@@ -114,7 +119,7 @@
                 app:layout_constraintVertical_bias="0.526" />
 
             <Button
-                android:id="@+id/nav_Home"
+                android:id="@+id/nav_HomeHome"
                 android:layout_width="32dp"
                 android:layout_height="31dp"
                 android:background="@drawable/ic_home"
@@ -124,7 +129,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/nav_Notifications"
+                android:id="@+id/nav_Notifs"
                 android:layout_width="33dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="44dp"
@@ -136,7 +141,7 @@
                 app:layout_constraintVertical_bias="0.526" />
 
             <Button
-                android:id="@+id/nav_Profile"
+                android:id="@+id/nav_ProfileHome"
                 android:layout_width="35dp"
                 android:layout_height="29dp"
                 android:layout_marginStart="8dp"
@@ -144,7 +149,7 @@
                 android:background="@drawable/ic_profile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/nav_Notifications"
+                app:layout_constraintStart_toEndOf="@+id/nav_Notifs"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.463" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -155,6 +160,7 @@
         android:id="@+id/usernameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
         android:hint="Username goes here"
         android:textColor="#FFF"
         android:textSize="20sp"
@@ -165,6 +171,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView2"
         app:layout_constraintVertical_bias="0.333" />
+
+    <Button
+        android:id="@+id/editProfileBtn"
+        android:layout_width="219dp"
+        android:layout_height="35dp"
+        android:fontFamily="@font/poppins_light"
+        android:text="Edit Profile"
+        app:layout_constraintBottom_toTopOf="@+id/postFeed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameView" />
+
+    <TextView
+        android:id="@+id/bioTxtView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/editProfileBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.172"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

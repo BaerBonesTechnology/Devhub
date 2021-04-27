@@ -38,4 +38,8 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="profile">Profile</string>
+    <string name="title_activity_notifications">Notifications</string>
+    <string name="postHint">What\'s new?</string>
+    <string name="buttonHintPost">Send Post button</string>
+    <string name="PostHint">What\'s new?</string>
 </resources>

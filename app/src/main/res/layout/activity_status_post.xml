@@ -5,73 +5,75 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2c2c2c"
-    tools:context=".Status_post">
+    tools:context=".StatusPost">
 
 
     <Button
         android:id="@+id/status_post_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_semibold"
+        android:layout_width="55dp"
+        android:layout_height="35dp"
+        android:fontFamily="@font/poppins_light"
         android:text="Post"
+        android:textSize="10sp"
         app:backgroundTint="#2C8500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.899"
+        app:layout_constraintHorizontal_bias="0.949"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
+        app:layout_constraintVertical_bias="0.443" />
 
     <Button
         android:id="@+id/pictureAddButton"
-        android:layout_width="378dp"
-        android:layout_height="47dp"
-        android:layout_marginBottom="464dp"
-        android:drawableRight="@android:drawable/ic_menu_gallery"
-        android:editable="false"
-        android:fontFamily="@font/poppins_semibold"
+        android:layout_width="373dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:drawableEnd="@android:drawable/ic_menu_gallery"
+        android:fontFamily="@font/poppins_light"
         android:gravity="top|center_vertical"
         android:hint="Tell us about your new projects"
         android:text="Add a photo"
         app:backgroundTint="#202020"
-        app:layout_constraintBottom_toTopOf="@+id/status_post_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/postEdit"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:drawableRight="@android:drawable/ic_menu_gallery" />
 
     <EditText
         android:id="@+id/postEdit"
-        android:layout_width="377dp"
-        android:layout_height="132dp"
+        android:layout_width="375dp"
+        android:layout_height="218dp"
         android:background="#1C1C1C"
-        android:editable="true"
         android:ems="10"
-        android:fontFamily="@font/poppins_semibold"
+        android:fontFamily="@font/poppins_light"
         android:gravity="start|top"
         android:hint="Tell us about your new project"
         android:inputType="textMultiLine"
+        android:paddingBottom="8dp"
         android:textColor="#D3D3D3"
         android:textColorHint="#636363"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.589"
+        app:layout_constraintHorizontal_bias="0.529"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.043" />
+        app:layout_constraintVertical_bias="0.061" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="310dp"
-        android:layout_height="347dp"
+        android:layout_width="375dp"
+        android:layout_height="328dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pictureAddButton"
-        app:layout_constraintVertical_bias="0.0"
-        tools:src="@tools:sample/backgrounds/scenic" />
+        app:layout_constraintVertical_bias="0.494"
+        tools:src="@tools:sample/backgrounds/scenic"
+        tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

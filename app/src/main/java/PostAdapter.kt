@@ -6,15 +6,19 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.devhub.Model.Posts
+import com.example.devhub.model.Posts
 import kotlinx.android.synthetic.main.item_post.view.*
 
-class PostAdapter(val context: Context, val posts: List<Posts>):
-    RecyclerView.Adapter<PostAdapter.ViewHolder>() {
+class PostAdapter(val context: Context, private var posts: List<Posts>, private var dootsClickListener: DootsClickListener):
+        RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+
 
         @SuppressLint("SetTextI18n")
         fun bind(post: Posts){
@@ -29,11 +33,13 @@ class PostAdapter(val context: Context, val posts: List<Posts>):
                 Glide.with(context).load(post.image_url).into(itemView.PostImage)
             }
             itemView.datePosted.text = DateUtils.getRelativeTimeSpanString(post.creation_time)
-
-            if(post.doots != 0){
-                itemView.DootsView.text = "${post.doots} doots"
+            if(post.doots > 0){
+            itemView.DootsView.text = "${post.doots} doots"
             }
+
         }
+
+
 
 
     }
@@ -44,10 +50,27 @@ class PostAdapter(val context: Context, val posts: List<Posts>):
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(posts[position])
+
+        val post = posts[position]
+
+        holder.itemView.doots2.setOnClickListener { dootsClickListener
+            .dootButton(holder.itemView.doots2, post, holder.itemView.DootsView)
+        }
+
+        holder.itemView.commentBtn.setOnClickListener { dootsClickListener
+            .commentButton(post) }
+
+        holder.bind(post)
+
     }
 
     override fun getItemCount() = posts.size
+
+    interface DootsClickListener{
+        @SuppressLint("SetTextI18n")
+        fun dootButton(button: ImageButton, post: Posts, textView: TextView)
+        fun commentButton(post:Posts)
+    }
 
 
 

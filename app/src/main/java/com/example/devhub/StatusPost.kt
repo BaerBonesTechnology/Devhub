@@ -6,19 +6,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import com.example.devhub.Model.Posts
-import com.example.devhub.Model.Users
+import com.example.devhub.model.Posts
+import com.example.devhub.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
-import com.google.firebase.internal.api.FirebaseNoSignedInUserException
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_status_post.*
-import java.net.URI
 
 private const val TAG = "PostActivity"
 private lateinit var auth: FirebaseAuth
@@ -30,7 +25,7 @@ private var photo_uri: Uri? = null
 private var url = ""
 
 
-class Status_post : AppCompatActivity() {
+class StatusPost : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +37,7 @@ class Status_post : AppCompatActivity() {
 
 
         db.collection("Users")
-            .document(auth.currentUser.uid as String)
+            .document(auth.currentUser.uid)
             .get()
             .addOnSuccessListener { userSnapshot ->
                 signedInUser = userSnapshot.toObject(Users::class.java)

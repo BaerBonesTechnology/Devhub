@@ -19,6 +19,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:background="#202020"
+        android:fontFamily="@font/poppins_semibold"
         android:text="_Username"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
@@ -33,6 +34,7 @@
         android:layout_marginRight="8dp"
         android:autoLink="web"
         android:background="#202020"
+        android:fontFamily="@font/poppins_light"
         android:text="Lorem Ipsum"
         android:textColor="@color/white" />
 
@@ -56,13 +58,24 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:background="#202020"
+        android:fontFamily="@font/poppins_light"
         android:text="1d ago"
         android:textColor="@android:color/darker_gray" />
 
-    <TextView
-        android:id="@+id/DootsView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/DootsView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_light"
+            android:text="doots go here"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,40 +83,31 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
-        <Button
+        <ImageButton
             android:id="@+id/doots2"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="98dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_weight="1"
-            android:background="#202020"
-            android:text="Doot"
-            app:backgroundTint="#202020" />
-
-        <Button
-            android:id="@+id/comments2"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="151dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#202020"
-            android:text="Comment"
-            app:backgroundTint="#202020" />
-
-        <Button
-            android:id="@+id/share"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#202020"
-            android:text="Share"
-            app:backgroundTint="#202020" />
+            app:srcCompat="@drawable/ic_like" />
 
+        <ImageButton
+            android:id="@+id/commentBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#202020"
+            app:srcCompat="@drawable/ic_chat" />
+
+        <ImageButton
+            android:id="@+id/shareBtn"
+            style="@style/Widget.AppCompat.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#202020"
+            app:srcCompat = "@drawable/ic_share"
+            />
     </LinearLayout>
 
 </LinearLayout>

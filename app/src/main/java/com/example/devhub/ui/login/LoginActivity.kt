@@ -2,12 +2,11 @@ package com.example.devhub.ui.login
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.devhub.HomePage
 import com.example.devhub.R
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -47,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 else
                 {
-                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, OnCompleteListener { task ->
+                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         //Sign in success
                         val user = auth.currentUser
@@ -55,14 +54,15 @@ class LoginActivity : AppCompatActivity() {
                         val intent = Intent(this, HomePage::class.java)
                         startActivity(intent)
 
-                        Toast.makeText(baseContext, "Successfully Logged In", Toast.LENGTH_LONG).show()
+                        Toast.makeText(baseContext, "Successfully Logged In", Toast.LENGTH_LONG)
+                            .show()
 
                         finish()
                     } else {
                         //Sign in failure
                         Toast.makeText(baseContext, "Login Failed", Toast.LENGTH_LONG).show()
                     }
-                })
+                }
 
                 }
             }
