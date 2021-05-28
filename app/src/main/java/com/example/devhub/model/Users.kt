@@ -7,5 +7,7 @@ data class Users(
     var posts: Int = 0,
     var bio: String = "",
     var ProfilePicture_url: String = "",
-    var userID:String = ""
+    var userID:String = "",
+    var FCM: String = "",
+    var FIAM:String = ""
     )

@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.devhub.com.example.devhub.model.Comment
+import com.example.devhub.model.Comment
 import kotlinx.android.synthetic.main.comment_adapter.view.*
 
 class CommentsAdapter(val context:Context, private var comments: List<Comment>):

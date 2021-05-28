@@ -5,7 +5,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Notifications">
+    tools:context=".NotificationPage">
 
     <LinearLayout
         android:id="@+id/linearLayout4"
@@ -97,7 +97,7 @@
             android:background="#191919">
 
             <Button
-                android:id="@+id/Post_Btn"
+                android:id="@+id/NPost_Btn"
                 android:layout_width="48dp"
                 android:layout_height="44dp"
                 android:background="@drawable/rounded_button"
@@ -111,41 +111,41 @@
                 tools:ignore="HardcodedText" />
 
             <Button
-                android:id="@+id/nav_Coding"
+                android:id="@+id/Nnav_Coding"
                 android:layout_width="33dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="44dp"
                 android:layout_marginRight="44dp"
                 android:background="@drawable/ic_coding"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/Post_Btn"
+                app:layout_constraintEnd_toStartOf="@+id/NPost_Btn"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.526" />
 
             <Button
-                android:id="@+id/nav_Home"
+                android:id="@+id/Nnav_Home"
                 android:layout_width="32dp"
                 android:layout_height="31dp"
                 android:background="@drawable/ic_home"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/nav_Coding"
+                app:layout_constraintEnd_toStartOf="@+id/Nnav_Coding"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/nav_Notifs"
+                android:id="@+id/Nnav_Notifs"
                 android:layout_width="33dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="44dp"
                 android:layout_marginLeft="44dp"
                 android:background="@drawable/ic_notifications"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/Post_Btn"
+                app:layout_constraintStart_toEndOf="@+id/NPost_Btn"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.526" />
 
             <Button
-                android:id="@+id/nav_Profile"
+                android:id="@+id/Nnav_Profile"
                 android:layout_width="35dp"
                 android:layout_height="29dp"
                 android:layout_marginStart="8dp"
@@ -153,7 +153,7 @@
                 android:background="@drawable/ic_profile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/nav_Notifs"
+                app:layout_constraintStart_toEndOf="@+id/Nnav_Notifs"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.463" />
         </androidx.constraintlayout.widget.ConstraintLayout>

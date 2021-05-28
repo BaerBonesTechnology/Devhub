@@ -12,6 +12,7 @@
         android:id="@+id/status_post_btn"
         android:layout_width="55dp"
         android:layout_height="35dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/poppins_light"
         android:text="Post"
         android:textSize="10sp"
@@ -20,8 +21,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.949"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.443" />
+        app:layout_constraintTop_toBottomOf="@+id/pictureAddButton"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/pictureAddButton"
@@ -29,6 +30,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="4dp"
         android:drawableEnd="@android:drawable/ic_menu_gallery"
+        android:drawableRight="@android:drawable/ic_menu_gallery"
         android:fontFamily="@font/poppins_light"
         android:gravity="top|center_vertical"
         android:hint="Tell us about your new projects"
@@ -39,8 +41,7 @@
         app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/postEdit"
-        app:layout_constraintVertical_bias="0.0"
-        android:drawableRight="@android:drawable/ic_menu_gallery" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/postEdit"
@@ -73,7 +74,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pictureAddButton"
         app:layout_constraintVertical_bias="0.494"
-        tools:src="@tools:sample/backgrounds/scenic"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/backgrounds/scenic" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

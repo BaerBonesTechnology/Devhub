@@ -7,17 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.devhub.com.example.devhub.model.Notification
+import com.example.devhub.model.UserNotification
 import kotlinx.android.synthetic.main.notification_adapter.view.*
 
-class NotificationsAdapter(val context: Context, private var notifications: MutableList<Notification>, private var notificationClick: GoToPost):
+class NotificationsAdapter(val context: Context, private var notifications: MutableList<UserNotification>, private var notificationClick: GoToPost):
     RecyclerView.Adapter<NotificationsAdapter.ViewHolder>(){
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view){
 
         @SuppressLint("SetTextI18n")
-        fun bind(notification: Notification){
+        fun bind(notification: UserNotification){
 
-            itemView.notificationText.text = notification.actions
+            itemView.notificationText.text = notification.body
             itemView.timeView.text = DateUtils.getRelativeTimeSpanString(notification.time)
         }
     }
@@ -37,6 +37,6 @@ class NotificationsAdapter(val context: Context, private var notifications: Muta
     override fun getItemCount()= notifications.size
 
     interface GoToPost{
-        fun clickedNotification (notification: Notification)
+        fun clickedNotification (notification: UserNotification)
     }
 }

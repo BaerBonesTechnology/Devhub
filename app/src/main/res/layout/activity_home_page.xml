@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/Layout"
+    android:id="@+id/clickedPost"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2c2c2c"
@@ -26,7 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/bottomNavigationView2"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photoButton"
@@ -93,7 +93,7 @@
             android:background="#191919">
 
             <Button
-                android:id="@+id/Post_Btn"
+                android:id="@+id/HPPost_Btn"
                 android:layout_width="48dp"
                 android:layout_height="44dp"
                 android:background="@drawable/rounded_button"
@@ -106,41 +106,43 @@
                 tools:ignore="HardcodedText" />
 
             <Button
-                android:id="@+id/nav_Coding1"
+                android:id="@+id/HPnav_Coding"
                 android:layout_width="33dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="44dp"
                 android:layout_marginRight="44dp"
                 android:background="@drawable/ic_coding"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/Post_Btn"
+                app:layout_constraintEnd_toStartOf="@+id/HPPost_Btn"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.526" />
 
             <Button
-                android:id="@+id/nav_Home"
+                android:id="@+id/HPnav_Home"
                 android:layout_width="32dp"
                 android:layout_height="31dp"
                 android:background="@drawable/ic_home"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/nav_Coding1"
+                app:layout_constraintEnd_toStartOf="@+id/HPnav_Coding"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/nav_Notifs"
+                android:id="@+id/HPnav_Notifs"
                 android:layout_width="33dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="44dp"
                 android:layout_marginLeft="44dp"
                 android:background="@drawable/ic_notifications"
+                android:clickable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/Post_Btn"
+                app:layout_constraintStart_toEndOf="@+id/HPPost_Btn"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.526" />
+                app:layout_constraintVertical_bias="0.526"
+                android:focusable="true" />
 
             <Button
-                android:id="@+id/nav_Profile"
+                android:id="@+id/HPnav_Profile"
                 android:layout_width="35dp"
                 android:layout_height="29dp"
                 android:layout_marginStart="8dp"
@@ -148,7 +150,7 @@
                 android:background="@drawable/ic_profile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/nav_Notifs"
+                app:layout_constraintStart_toEndOf="@+id/HPnav_Notifs"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.463" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,11 @@
+
 package com.example.devhub
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.LightingColorFilter
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -11,134 +14,115 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.devhub.com.example.devhub.data.Library.ActionLibrary
-import com.example.devhub.com.example.devhub.model.Notification
-import com.example.devhub.model.Posts
-import com.example.devhub.model.Users
+import com.example.devhub.data.Library.ActionLibrary
+import com.example.devhub.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
+import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_clicked__post.*
 import kotlinx.android.synthetic.main.activity_home_page.*
 import kotlinx.android.synthetic.main.activity_home_page.LogoutBtn
-import kotlinx.android.synthetic.main.activity_home_page.Post_Btn
 import kotlinx.android.synthetic.main.activity_home_page.homeLogo
-import kotlinx.android.synthetic.main.activity_home_page.nav_Coding1
-import kotlinx.android.synthetic.main.activity_home_page.nav_Home
-import kotlinx.android.synthetic.main.activity_home_page.nav_Profile
 import kotlinx.android.synthetic.main.activity_home_page.view.*
 import kotlinx.android.synthetic.main.activity_status_post.*
 import kotlinx.android.synthetic.main.item_post.*
 import kotlinx.android.synthetic.main.item_post.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
-private var signedInUser: Users? = null
+private var photo_uri: Uri? = null
+private var post: Posts? = null
+private var url = ""
+
+private val postsRef = ActionLibrary().getPosts()
+
 private const val TAG = "Post:"
 private const val EXTRA_USERNAME = "EXTRA_USERNAME"
-private lateinit var posts:MutableList<Posts>
-private lateinit var adapter: PostAdapter
-private lateinit var storage: StorageReference
-private var photo_uri: Uri? = null
-private var dooted: Boolean = false
-private var post: Posts? = null
+private const val EXTRA_USER_ID = "EXTRA_USERID"
 private const val EXTRA_POST_ID = "EXTRA_POST_ID"
-private lateinit var firestoreDB: FirebaseFirestore
-private lateinit var auth: FirebaseAuth
 private const val PICK_PHOTO_CODE = 1234
-private var url = ""
+
+private var signedInUser: Users? = null
+private lateinit var posts:MutableList<Posts>
+private lateinit var storage: StorageReference
+private lateinit var firestoreDB: FirebaseFirestore
+private lateinit var adapter: PostAdapter
+private lateinit var auth: FirebaseAuth
+private lateinit var fcm: FirebaseMessaging
+private lateinit var fiam: FirebaseInstallations
 
 
 
 
 open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
-
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_page)
 
-        auth = FirebaseAuth.getInstance()
-        firestoreDB = FirebaseFirestore.getInstance()
-        //TODO: Create Layout File
-        //TODO: Create Data Source
-        posts = mutableListOf()
-        //TODO: Create Adapter
-        adapter = PostAdapter(this, posts, this)
-        //TODO: Bind Adapter and layout manager to the RV
-        postFeed.adapter = adapter
-        postFeed.layoutManager = LinearLayoutManager(this)
+
 
         // make a query to firestore to gather posts
+        fcm = FirebaseMessaging.getInstance()
+        fiam = FirebaseInstallations.getInstance()
+        firestoreDB = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
+
         firestoreDB.collection("Users")
             .document(auth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { userSnapshot ->
                 signedInUser = userSnapshot.toObject(Users::class.java)
                 Log.i(TAG, " signed in user: $signedInUser")
-            }
-            .addOnFailureListener { exception ->
-                Log.i(TAG, "Failure to fetch signed in user", exception)
-            }
+                posts = mutableListOf()
+                adapter = PostAdapter(this, posts, this, signedInUser!!.username)
+                postFeed.adapter = adapter
+                postFeed.layoutManager = LinearLayoutManager(this)
 
-        val postsRef = ActionLibrary().getPosts()
+                postsRef.addSnapshotListener { snapshot, exception ->
+                    if (exception != null || snapshot == null) {
+                        Log.e(TAG, "Exception when querying posts", exception)
+                        return@addSnapshotListener
+                    }
 
-        storage = FirebaseStorage.getInstance().reference
 
-
-
-        postsRef.addSnapshotListener { snapshot, exception ->
-            if (exception != null || snapshot == null) {
-                Log.e(TAG, "Exception when querying posts", exception)
-                return@addSnapshotListener
-            }
-
-            val postList = snapshot.documents
-            posts.clear()
-            postList.forEach {
-                post = it.toObject(Posts::class.java)
-                if (post != null) {
-                    post!!.PostId = it.id
-                    posts.add(post!!)
-                    Log.e(TAG, post?.PostId!!)
-                    adapter.notifyDataSetChanged()
-                }
-                val dootsRef = firestoreDB
-                        .collection("Posts").document(post!!.PostId).collection("LikedBy")
-
-                dootsRef.get().addOnSuccessListener {
-                    Log.d("LIKED_QUERY", "Getting document")
-
-                    if (it.isEmpty) {
-                        Log.d("LIKED_QUERY", "Collections are empty")
-                    } else {
-                        val list = it.documents
-                        for (documents in list) {
-                            if (documents.id == signedInUser?.username) {
-                                dooted = true
-                            }
+                    val postList = snapshot.documents
+                    posts.clear()
+                    postList.forEach {
+                        post = it.toObject(Posts::class.java)
+                        if (post != null) {
+                            post!!.PostId = it.id
+                            firestoreDB.collection("Posts").document(it.id).set(post!!)
+                            posts.add(post!!)
+                            Log.e(TAG, post?.PostId!!)
+                            adapter.notifyDataSetChanged()
                         }
 
                     }
-                }.addOnFailureListener {
-                    Log.d("LIKED_QUERY", "Error getting document", exception)
 
                 }
 
-            }
 
 
-        }
+
+
+        storage = FirebaseStorage.getInstance().reference
 
         newPostString.setOnFocusChangeListener { _, hasFocus ->
             if(hasFocus){
-                photoButton.isGone = false;
+                photoButton.isGone = false
                 Log.i("NEW POST ACTIVITY", "Text Focused")
             }else{
-                photoButton.isGone = true;
+                photoButton.isGone = true
                 Log.i("NEW POST ACTIVITY", "Text unfocused")
 
             }
@@ -188,8 +172,6 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
                                             )
                                                     .show()
 
-                                            val intent = Intent(this, HomePage::class.java)
-                                            startActivity(intent)
 
                                         } else {
                                             Log.d(TAG, "Post Made written with ID: $signedInUser")
@@ -213,7 +195,7 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
 
                                             firestoreDB.collection("Users")
-                                                    .document(auth.currentUser.uid)
+                                                    .document(signedInUser!!.userID)
                                                     .set(userNewInfo)
                                                     .addOnSuccessListener {
                                                         Log.d(
@@ -228,10 +210,8 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
                                                                 e
                                                         )
                                                     }
-
-                                            val intent = Intent(this, HomePage::class.java)
-                                            startActivity(intent)
                                         }
+
                                     }
                         }
             } else {
@@ -251,9 +231,6 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
                                 Toast.makeText(baseContext, "Posting failed", Toast.LENGTH_SHORT)
                                         .show()
 
-                                val intent = Intent(this, HomePage::class.java)
-                                startActivity(intent)
-
                             } else {
                                 Log.d(TAG, "Post Made written with ID: $signedInUser")
 
@@ -272,7 +249,7 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
 
                                 firestoreDB.collection("Users")
-                                        .document(auth.currentUser.uid)
+                                        .document(signedInUser!!.userID)
                                         .set(userNewInfo)
                                         .addOnSuccessListener {
                                             Log.d(
@@ -287,15 +264,14 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
                                                     e
                                             )
                                         }
-
-                                val intent = Intent(this, HomePage::class.java)
-                                startActivity(intent)
-
                             }
 
                         }
             }
-
+            newPostString.editableText.clear()
+            Post_Button.isEnabled = true
+            postImage.setImageURI(null)
+            postImage.isVisible = false
         }
 
         photoButton.setOnClickListener {
@@ -315,131 +291,179 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
             Firebase.auth.signOut()
 
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, SignUp::class.java)
 
             startActivity(intent)
 
             Toast.makeText(baseContext, "You have been logged out", Toast.LENGTH_LONG).show()
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
+
         }
 
-        Post_Btn.setOnClickListener {
+        HPPost_Btn.setOnClickListener {
             val intent = Intent(this, StatusPost::class.java)
             startActivity(intent)
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
+
         }
 
         homeLogo.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
+
         }
 
-        nav_Profile.setOnClickListener {
+        HPnav_Profile.setOnClickListener {
             val intent = Intent(this, ProfilePage::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
+            intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
             startActivity(intent)
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
+
 
         }
-        nav_Home.setOnClickListener {
+        HPnav_Home.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
+
         }
 
-        nav_Coding1.setOnClickListener {
+        HPnav_Coding.setOnClickListener {
             val intent = Intent(this, CodingNotes::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             startActivity(intent)
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
+
         }
-        nav_Notifs.setOnClickListener {
-            val intent = Intent(this, Notifications::class.java)
+        HPnav_Notifs.setOnClickListener {
+            val intent = Intent(this, NotificationPage::class.java)
+            intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
             startActivity(intent)
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
+
         }
+            }
+            .addOnFailureListener { exception ->
+                Log.i(TAG, "Failure to fetch signed in user", exception)
+            }
 
     }
+
 
     @SuppressLint("SetTextI18n")
     override fun dootButton(button: ImageButton, post: Posts, textView: TextView) {
         //sets a variable named postUpdate to gather document from Firestore
+
+
         Log.i("Doot Button", "For post ${post.PostId} is pressed and textView is equal to ${textView.text}")
 
+        val postUpdate = firestoreDB.collection("Posts").document(post.PostId).collection("LikedBy")
 
-        val postUpdate = firestoreDB.collection("Posts").document(post.PostId)
-
-
-
-        if (dooted && post.doots > 0) {
-            postUpdate.collection("LikedBy").document(signedInUser!!.username).delete()
-            post.doots = post.doots - 1
-
-
-        } else {
-            postUpdate.collection("LikedBy").document(signedInUser!!.username)
-                .set(signedInUser!!)
-            post.doots = post.doots + 1
+        firestoreDB.collection("Users").document(auth.currentUser.uid).get().addOnCompleteListener{
+            if(it.isSuccessful){
+                signedInUser = it.result.toObject(Users::class.java)
+            }
         }
 
-        dooted = !dooted
-        //sets post profile modification and adds success and failure listeners to post to log
-        val set = postUpdate.set(post)
+        postUpdate.get().addOnSuccessListener { it ->
+            if (it.isEmpty) {
+                Log.d("Liked Activity", "Collections are empty")
+                postUpdate.document(signedInUser!!.username).set(signedInUser!!)
+                if(post.user?.userID != signedInUser!!.userID){
+
+                    val title = "Devhub"
+                    val message = "${signedInUser?.username }dooted your post"
 
 
-        set.addOnSuccessListener {
-            Log.d("Firebase", "Liked by _${signedInUser?.username}")
+                    UserNotification(message, title, System.currentTimeMillis(), post.PostId).also {
+                        firestoreDB.collection("Users").document(post.user!!.userID).collection("Notifications").add(it)
+                    }
+
+                    PushNotifications(
+                        Notification(title, message//
+                                // , System.currentTimeMillis(),post.PostId
+                                ),
+                        post.user!!.FCM
+                        ).also{
+                            sendNotifications(it)
+                        }
+                    }
+            } else {
+                postUpdate.document(signedInUser!!.username)
+                    .get()
+                    .addOnSuccessListener {
+                        postUpdate.document(signedInUser!!.username).delete()
+                        button.colorFilter = LightingColorFilter(Color.BLACK, Color.BLACK)
+                    }.addOnFailureListener {
+                        postUpdate.document(signedInUser!!.username).set(signedInUser!!)
+                        if(post.user?.userID != signedInUser!!.userID){
+                            val title = "Devhub"
+                            val message = "${signedInUser?.username} dooted your post"
+                            PushNotifications(
+                                Notification(title, message),
+                                post.user!!.FCM
+                            ).also{
+                                sendNotifications(it)
+                            }
+                        }
+                    }
+            }
+        }.addOnFailureListener{
+            Log.e("Liked Query", "Error getting document", it)
         }
-        set.addOnFailureListener {
-            Log.d("Firebase", "Like Error")
-        }
-
-        //sends notification to user
-        if (signedInUser!!.userID != post.user!!.userID) {
-            val notification = Notification(
-                signedInUser,
-                post,
-                "dooted your post",
-                System.currentTimeMillis()
-            )
-            firestoreDB.collection("Users").document(post.user!!.userID)
-                .collection("Notifications")
-                .add(notification).addOnSuccessListener {
-                    Log.d(TAG, "Notification Sent")
-                }.addOnFailureListener {
-                    Log.e(TAG, "Notification Failure", it)
-                }
-        }else{
-            Log.i(TAG, "user affected own post")
-
-        }
-
-        //logs both user activity and the number of doots in a single post
-        Log.i("User Activity", "Post liked ${post.PostId} by ${signedInUser?.username}")
-        Log.d("PostActivity", "Post $post now has ${post.doots} doots")
-
-        //shows and hides doots counter on post
-        if (post.doots >= 1) {
-            textView.isGone = false
-            textView.text = "${post.doots} doots"
-        } else {
-            textView.isGone = true
-        }
-
 
     }
     override fun commentButton(post: Posts) {
             val intent = Intent(this, ClickedPost::class.java)
             intent.putExtra(EXTRA_POST_ID, post.PostId)
-            startActivity(intent)
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
 
-        }
+
+    }
+
+    override fun goToProfile(user: Users?) {
+        val intent = Intent(this, ProfilePage::class.java)
+        intent.putExtra(EXTRA_USERNAME, user?.username)
+        intent.putExtra(EXTRA_USER_ID, user?.userID)
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
+
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_PHOTO_CODE)
             if (resultCode == Activity.RESULT_OK) {
                 photo_uri = data?.data
                 postImage.setImageURI(photo_uri)
-                postImage.isGone = false;
+                postImage.isGone = false
 
             } else {
                 Log.i(TAG, "Gallery Closed user cancelled")
             }
     }
 
+    override fun delete(post: Posts) {
+        firestoreDB.collection("Posts").document(post.PostId).delete()
+        Log.i(TAG, "User deleted post")
+    }
+
+    private fun sendNotifications(notification: PushNotifications) = CoroutineScope(Dispatchers.IO).launch {
+
+        try{
+            val response = RetrofitInstance.api.postNotification(notification)
+
+            if(response.isSuccessful){
+                Log.d(TAG, "Response: $response")
+            }else{
+                Log.e(TAG, "No response ${response.errorBody().toString()}")
+            }
+
+        }catch (e: Exception){
+            Log.e(TAG, "cant send message", e)
+        }
+    }
 }
 

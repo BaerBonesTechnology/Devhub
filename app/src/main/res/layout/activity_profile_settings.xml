@@ -10,28 +10,27 @@
         android:id="@+id/usernameChangeView"
         android:layout_width="88dp"
         android:layout_height="29dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
         android:fontFamily="@font/poppins_light"
         android:text="username"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/save_Button"
+        app:layout_constraintBottom_toBottomOf="@+id/usernameChangeTxt"
+        app:layout_constraintEnd_toStartOf="@+id/usernameChangeTxt"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.405" />
+        app:layout_constraintTop_toTopOf="@+id/usernameChangeTxt" />
 
     <EditText
         android:id="@+id/usernameChangeTxt"
-        android:layout_width="295dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="240dp"
+        android:layout_width="260dp"
+        android:layout_height="57dp"
         android:ems="10"
         android:fontFamily="@font/poppins_light"
         android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/bioChangeTxt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/usernameChangeView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498" />
 
     <Button
         android:id="@+id/save_Button"
@@ -48,35 +47,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameChangeTxt"
-        app:layout_constraintVertical_bias="0.865" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.804" />
 
     <TextView
         android:id="@+id/bioView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
         android:fontFamily="@font/poppins_light"
         android:text="Bio"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.191"
+        app:layout_constraintBottom_toBottomOf="@+id/bioChangeTxt"
+        app:layout_constraintEnd_toStartOf="@+id/bioChangeTxt"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameChangeView"
-        app:layout_constraintVertical_bias="0.026" />
+        app:layout_constraintTop_toTopOf="@+id/bioChangeTxt" />
 
     <EditText
         android:id="@+id/bioChangeTxt"
-        android:layout_width="297dp"
-        android:layout_height="41dp"
+        android:layout_width="284dp"
+        android:layout_height="75dp"
         android:ems="10"
         android:fontFamily="@font/poppins_light"
         android:gravity="start|top"
         android:inputType="textMultiLine"
-        app:layout_constraintBottom_toTopOf="@+id/save_Button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.157"
-        app:layout_constraintStart_toEndOf="@+id/bioView"
-        app:layout_constraintTop_toBottomOf="@+id/usernameChangeTxt"
-        app:layout_constraintVertical_bias="0.253" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

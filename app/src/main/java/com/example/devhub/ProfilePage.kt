@@ -2,6 +2,8 @@ package com.example.devhub
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.LightingColorFilter
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -10,35 +12,34 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.devhub.com.example.devhub.data.Library.ActionLibrary
-import com.example.devhub.com.example.devhub.model.Notification
-import com.example.devhub.model.Posts
-import com.example.devhub.model.Users
+import com.example.devhub.data.Library.ActionLibrary
+import com.example.devhub.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_home_page.*
 import kotlinx.android.synthetic.main.activity_home_page.LogoutBtn
-import kotlinx.android.synthetic.main.activity_home_page.Post_Btn
 import kotlinx.android.synthetic.main.activity_home_page.homeLogo
-import kotlinx.android.synthetic.main.activity_home_page.postFeed
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.item_post.*
-import kotlinx.android.synthetic.main.item_post.view.*
+import kotlinx.android.synthetic.main.activity_profile.postFeed
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 private var signedInUser: Users? = null
+private var profileUser: Users? = null
 private const val TAG = "Post:"
 private const val EXTRA_USERNAME = "EXTRA_USERNAME"
+private const val EXTRA_USER_ID = "EXTRA_USERID"
 private lateinit var auth: FirebaseAuth
-@SuppressLint("StaticFieldLeak")
 private lateinit var firestoreDB: FirebaseFirestore
 private lateinit var posts:MutableList<Posts>
-@SuppressLint("StaticFieldLeak")
 private lateinit var adapter: PostAdapter
-private var dooted:Boolean = false
 private var post: Posts? = null
 private const val EXTRA_POST_ID = "EXTRA_POST_ID"
+private var userID: String? = ""
+private var username:String? = ""
 
 
 class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
@@ -47,75 +48,110 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+
+        userID = intent.getStringExtra(EXTRA_USER_ID)
+        username = intent.getStringExtra(EXTRA_USERNAME)
+
         firestoreDB = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
 
-        posts = mutableListOf()
-        adapter = PostAdapter(this, posts, this)
-        postFeed.adapter = adapter
-        postFeed.layoutManager = LinearLayoutManager(this)
-
-
-        // make a query to firestore to gather posts
+        usernameView.text = username
 
         firestoreDB.collection("Users")
             .document(auth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { userSnapshot ->
                 signedInUser = userSnapshot.toObject(Users::class.java)
-                usernameView.text = "_"+ signedInUser?.username +"\n User Posts:"+ signedInUser?.posts
-                bioTxtView.text = signedInUser?.bio
+
+                posts = mutableListOf()
+                adapter = PostAdapter(this, posts, this, signedInUser!!.username)
+                postFeed.adapter = adapter
+                postFeed.layoutManager = LinearLayoutManager(this)
+
                 Log.i(TAG, " signed in user: $signedInUser")
-                val username = intent.getStringExtra(EXTRA_USERNAME)
 
-                val postsRef = ActionLibrary().getPosts().whereEqualTo("user.username", username)
+                if(signedInUser?.userID != userID) {
+                    firestoreDB.collection("Users")
+                        .document(userID!!)
+                        .get()
+                        .addOnSuccessListener { userSnapshot ->
+                            profileUser = userSnapshot.toObject(Users::class.java)
+                            Log.i(TAG, " signed in user: $signedInUser")
 
-                postsRef.addSnapshotListener { snapshot, exception ->
-                    if (exception != null || snapshot == null) {
-                        Log.e(TAG, "Exception when querying posts", exception)
-                        return@addSnapshotListener
-                    }else {
+                            val postsRef =
+                                ActionLibrary().getPosts().whereEqualTo("user.userID", profileUser?.userID)
 
-                        val postList = snapshot.documents
-                        posts.clear()
-                        postList.forEach {
-                            post = it.toObject(Posts::class.java)
-                            if (post != null) {
-                                post!!.PostId = it.id
-                                posts.add(post!!)
 
-                                adapter.notifyDataSetChanged()
-                            }
-                            val dootsRef = firestoreDB
-                                    .collection("Posts").document(post!!.PostId).collection("LikedBy")
 
-                            dootsRef.get().addOnSuccessListener {
-                                Log.d("LIKED_QUERY", "Getting document")
-
-                                if (it.isEmpty) {
-                                    Log.d("LIKED_QUERY", "Collections are empty")
+                            postsRef.addSnapshotListener { snapshot, exception ->
+                                if (exception != null || snapshot == null) {
+                                    Log.e(TAG, "Exception when querying posts", exception)
+                                    return@addSnapshotListener
                                 } else {
-                                    val list = it.documents
-                                    for (documents in list) {
-                                        if (documents.id == signedInUser?.username) {
-                                            dooted = true
+
+                                    val postList = snapshot.documents
+                                    posts.clear()
+                                    postList.forEach { it ->
+                                        post = it.toObject(Posts::class.java)
+                                        if (post != null) {
+                                            post!!.PostId = it.id
+                                            posts.add(post!!)
+                                            adapter.notifyDataSetChanged()
                                         }
                                     }
-
                                 }
-                            }.addOnFailureListener {
-                                Log.d("LIKED_QUERY", "Error getting document", exception)
-
                             }
 
+                            usernameView.text = "_" + username
+                            bioTxtView.text = profileUser?.bio
+                            editProfileBtn.isGone = true
+
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.i(TAG, "Failure to fetch signed in user", exception)
+                        }
+                }
+                else {
+
+
+
+                    val postsRef =
+                        ActionLibrary().getPosts().whereEqualTo("user.userID", signedInUser?.userID)
+
+
+
+                    postsRef.addSnapshotListener { snapshot, exception ->
+                        if (exception != null || snapshot == null) {
+                            Log.e(TAG, "Exception when querying posts", exception)
+                            return@addSnapshotListener
+                        } else {
+
+                            val postList = snapshot.documents
+                            posts.clear()
+                            postList.forEach { it ->
+                                post = it.toObject(Posts::class.java)
+                                if (post != null) {
+                                    post!!.PostId = it.id
+                                    posts.add(post!!)
+                                    adapter.notifyDataSetChanged()
+                                }
+                            }
                         }
                     }
+
+                    usernameView.text = "_" + username
+                    bioTxtView.text = signedInUser?.bio
+
                 }
+
             }
             .addOnFailureListener { exception ->
                 Log.i(TAG, "Failure to fetch signed in user", exception)
             }
+
+
+
 
 
 
@@ -125,14 +161,14 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
 
             Firebase.auth.signOut()
 
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, SignUp::class.java)
 
             startActivity(intent)
 
             Toast.makeText(baseContext, "You have been logged out", Toast.LENGTH_LONG).show()
         }
 
-        Post_Btn.setOnClickListener {
+        PPPost_Btn.setOnClickListener {
             //TODO: create UI for adding post
             val intent = Intent(this, StatusPost::class.java)
             startActivity(intent)
@@ -145,76 +181,95 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
             startActivity(intent)
         }
 
-        nav_ProfileHome.setOnClickListener {
+        PPnav_ProfileHome.setOnClickListener {
             val intent = Intent(this, ProfilePage::class.java)
+            intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             startActivity(intent)
 
         }
-        nav_HomeHome.setOnClickListener {
+        PPnav_HomeHome.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
+            startActivity(intent)
+        }
+        PPnav_Coding.setOnClickListener {
+            val intent = Intent(this, CodingNotes::class.java)
+            intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
+            startActivity(intent)
+        }
+        PPnav_Notifs.setOnClickListener {
+            val intent = Intent(this, NotificationPage::class.java)
+            intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
             startActivity(intent)
         }
 
         editProfileBtn.setOnClickListener{
             val intent = Intent(this, ProfileSettings::class.java)
             startActivity(intent)
+
         }
     }
 
     @SuppressLint("SetTextI18n")
     override fun dootButton(button: ImageButton, post: Posts, textView: TextView) {
         //sets a variable named postUpdate to gather document from Firestore
-        val postUpdate = firestoreDB.collection("Posts").document(post.PostId)
+        Log.i("Doot Button", "For post ${post.PostId} is pressed and textView is equal to ${textView.text}")
 
 
+        val postUpdate = firestoreDB.collection("Posts").document(post.PostId).collection("LikedBy")
 
-        if (dooted && post.doots > 0) {
-            postUpdate.collection("LikedBy").document(signedInUser!!.username).delete()
-            post.doots = post.doots - 1
+        val userSignedIn = signedInUser!!
 
+        postUpdate.get().addOnSuccessListener { it ->
+            if (it.isEmpty) {
+                Log.d("Liked Activity", "Collections are empty")
+                postUpdate.document(userSignedIn.username).set(userSignedIn)
+                if(post.user?.userID != userSignedIn.userID){
 
-        } else {
-            postUpdate.collection("LikedBy").document(signedInUser!!.username).set(signedInUser!!)
-                .addOnSuccessListener {
-                Log.d("Firebase", "Liked by _${signedInUser?.username}")
-            }
-                .addOnFailureListener {
-                    Log.d("Firebase", "Like Error")
-                }
-            post.doots = post.doots + 1
-        }
+                    val title = "Devhub"
+                    val message = "${signedInUser?.username} dooted your post"
+                    button.colorFilter = LightingColorFilter(Color.BLACK, Color.GREEN)
 
-        dooted = !dooted
-        //sets post profile modification and adds success and failure listeners to post to log
-
-        //sends notification to user
-        if(signedInUser != post.user) {
-            val notification = Notification(
-                    signedInUser,
-                    post,
-                    "dooted",
-                    System.currentTimeMillis()
-            )
-            firestoreDB.collection("Users").document(post.user!!.userID)
-                .collection("Notifications").add(notification).addOnSuccessListener {
-                        Log.d(TAG, "Notification Sent")
-                    }.addOnFailureListener {
-                        Log.e(TAG, "Notification Failure", it)
+                    UserNotification(message, title, System.currentTimeMillis(), post.PostId).also {
+                        firestoreDB.collection("Users").document(post.user!!.userID).collection("Notifications").add(it)
                     }
+
+                    PushNotifications(
+                        Notification(title, message
+                        ),
+                        post.user!!.FCM
+                    ).also{
+                        sendNotifications(it)
+                    }
+
+                }
+            } else {
+                postUpdate.document(userSignedIn.username)
+                    .get()
+                    .addOnSuccessListener {
+                        postUpdate.document(userSignedIn.username).delete()
+                        button.colorFilter = LightingColorFilter(Color.BLACK, Color.BLACK)
+                    }.addOnFailureListener {
+                        postUpdate.document(userSignedIn.username).set(userSignedIn)
+                        button.colorFilter = LightingColorFilter(Color.BLACK, Color.GREEN)
+                        if(post.user?.userID != userSignedIn.userID){
+
+                            val title = "Devhub"
+                            val message = "${signedInUser?.username} dooted your post"
+                            PushNotifications(
+                                Notification(title, message),
+                                post.user!!.FCM
+                            ).also{
+                                sendNotifications(it)
+                            }
+                        }
+                    }
+            }
+        }.addOnFailureListener{
+            Log.e("Liked Query", "Error getting document", it)
         }
 
-        //logs both user activity and the number of doots in a single post
-        Log.i("User Activity", "Post liked ${post.PostId} by ${signedInUser?.username}")
-        Log.d("PostActivity", "Post $post now has ${post.doots} doots")
 
-        //shows and hides doots counter on post
-        if (post.doots >= 1) {
-            textView.isGone = false
-            textView.text = "${post.doots} doots"
-        } else {
-            textView.isGone = true
-        }
     }
 
     override fun commentButton( post:Posts){
@@ -222,4 +277,37 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
         intent.putExtra(EXTRA_POST_ID, post.PostId)
         startActivity(intent)
     }
+    override fun goToProfile(user: Users?) {
+        val intent = Intent(this, ProfilePage::class.java)
+        intent.putExtra(EXTRA_USER_ID, user?.userID)
+        intent.putExtra(EXTRA_USERNAME, user?.username)
+        startActivity(intent)
+    }
+
+    override fun delete(post: Posts) {
+        firestoreDB.collection("Posts").document(post.PostId).delete()
+
+        Log.i(TAG, "User deleted post")
+
+        val intent = Intent(this, ProfilePage::class.java)
+        intent.putExtra(EXTRA_USER_ID, post.user?.userID)
+        intent.putExtra(EXTRA_USERNAME, post.user?.username)
+        startActivity(intent)
+    }
+    private fun sendNotifications(notification: PushNotifications) = CoroutineScope(Dispatchers.IO).launch {
+
+        try{
+            val response = RetrofitInstance.api.postNotification(notification)
+
+            if(response.isSuccessful){
+                Log.d(TAG, "Response: $response")
+            }else{
+                Log.e(TAG, "No response ${response.errorBody().toString()}")
+            }
+
+        }catch (e: Exception){
+            Log.e(TAG, "cant send message", e)
+        }
+    }
+
 }

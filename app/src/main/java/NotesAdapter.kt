@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.devhub.com.example.devhub.model.Notes
+import com.example.devhub.model.Notes
 import kotlinx.android.synthetic.main.notes_adapter.view.*
 
 

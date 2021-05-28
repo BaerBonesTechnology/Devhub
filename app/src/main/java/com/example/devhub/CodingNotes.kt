@@ -1,3 +1,4 @@
+
 package com.example.devhub
 
 import android.annotation.SuppressLint
@@ -8,20 +9,25 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.devhub.com.example.devhub.model.Notes
+import com.example.devhub.model.Notes
 import com.example.devhub.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_coding_notes.*
-import kotlinx.android.synthetic.main.notes_adapter.*
 
 private lateinit var notes:MutableList<Notes>
+
+@SuppressLint("StaticFieldLeak")
 private lateinit var adapter: NotesAdapter
+
+@SuppressLint("StaticFieldLeak")
 private lateinit var db: FirebaseFirestore
+
 private lateinit var auth: FirebaseAuth
 private const val EXTRA_USERNAME = "EXTRA_USERNAME"
-private var signedInUser: Users? = null
+private const val EXTRA_USER_ID = "EXTRA_USER_ID"
+private lateinit var signedInUser: Users
 private const val TAG = "NotesActivity"
 
 
@@ -43,6 +49,7 @@ class CodingNotes : AppCompatActivity(), NotesAdapter.ClickListener {
         NotesView.adapter = adapter
         NotesView.layoutManager = LinearLayoutManager(this)
 
+        val username = intent.getStringExtra(EXTRA_USERNAME)
 
         db = FirebaseFirestore.getInstance()
 
@@ -50,43 +57,45 @@ class CodingNotes : AppCompatActivity(), NotesAdapter.ClickListener {
                 .document(auth.currentUser!!.uid)
                 .get()
                 .addOnSuccessListener { userSnapshot ->
-                    signedInUser = userSnapshot.toObject(Users::class.java)
+                    signedInUser = userSnapshot.toObject(Users::class.java)!!
                     Log.i(TAG, " signed in user: $signedInUser")
+
+                    val notesRef = db
+                        .collection("notes")
+                        .limit(20)
+                        .orderBy("note_time_Created", Query.Direction.DESCENDING)
+                        .whereEqualTo("user.username", username)
+
+
+
+                    notesRef.addSnapshotListener { snapshot, exception ->
+                        if (exception != null || snapshot == null) {
+                            Log.e(TAG, "Exception when querying posts", exception)
+                            return@addSnapshotListener
+                        }
+
+                        val notesList = snapshot.toObjects(Notes::class.java)
+
+                        notes.clear()
+                        notes.addAll(notesList)
+                        adapter.notifyDataSetChanged()
+
+                        for (notes in notesList) {
+                            Log.i(
+                                TAG,
+                                "Notes $notes"
+                            )
+                        }
+                    }
+
                 }
                 .addOnFailureListener { exception ->
                     Log.i(TAG, "Failure to fetch signed in user", exception)
                 }
 
-        val username = intent.getStringExtra(EXTRA_USERNAME)
-
-
-        val notesRef = db
-                .collection("notes")
-                .limit(20)
-                .orderBy("note_time_Created", Query.Direction.DESCENDING)
-                .whereEqualTo("user.username", signedInUser?.username)
 
 
 
-        notesRef.addSnapshotListener { snapshot, exception ->
-            if (exception != null || snapshot == null) {
-                Log.e(TAG, "Exception when querying posts", exception)
-                return@addSnapshotListener
-            }
-
-            val notesList = snapshot.toObjects(Notes::class.java)
-
-            notes.clear()
-            notes.addAll(notesList)
-            adapter.notifyDataSetChanged()
-            
-            for (notes in notesList) {
-                Log.i(
-                        TAG,
-                        "Notes $notes"
-                )
-            }
-        }
 
 
 
@@ -95,18 +104,28 @@ class CodingNotes : AppCompatActivity(), NotesAdapter.ClickListener {
             startActivity(intent)
         }
 
-        homeBtn.setOnClickListener {
-            val intent = Intent(this, HomePage::class.java)
+        CNPost_Btn.setOnClickListener {
+            val intent = Intent(this, StatusPost::class.java)
             startActivity(intent)
         }
-        profileBtn.setOnClickListener {
+        CNnav_Profile.setOnClickListener {
             val intent = Intent(this, ProfilePage::class.java)
-            intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
+            intent.putExtra(EXTRA_USERNAME, signedInUser.username)
+            intent.putExtra(EXTRA_USER_ID, signedInUser.userID)
             startActivity(intent)
         }
-        codingBtn.setOnClickListener {
+        CNnav_Coding.setOnClickListener {
             val intent = Intent(this, CodingNotes::class.java)
-            intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
+            intent.putExtra(EXTRA_USERNAME, signedInUser.username)
+            startActivity(intent)
+        }
+        CNnav_Notifs.setOnClickListener {
+            val intent = Intent(this, NotificationPage::class.java)
+            intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
+            startActivity(intent)
+        }
+        CNnav_Home.setOnClickListener {
+            val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
 

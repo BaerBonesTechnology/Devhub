@@ -1,11 +1,6 @@
-package com.example.devhub.com.example.devhub.model
-
-import com.example.devhub.model.Posts
-import com.example.devhub.model.Users
+package com.example.devhub.model
 
 data class Notification (
-    var fromUser: Users? = null,
-    var userPost: Posts? = null,
-    var actions: String = "",
-    var time: Long = 0
+    val title: String = "",
+    val body: String = "",
         )

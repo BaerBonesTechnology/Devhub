@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.devhub.HomePage
 import com.example.devhub.R
+import com.example.devhub.SplashScreenActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -21,19 +21,6 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
-
-
-
-
-        val currUser = auth.currentUser
-        if (currUser != null) {
-            //Send to 'News Feed'
-
-            val intent = Intent(this, HomePage::class.java)
-            startActivity(intent)
-
-            Toast.makeText(baseContext, "Welcome @$emailLogin", Toast.LENGTH_SHORT).show()
-        }
 
             loginBtn.setOnClickListener {
 
@@ -51,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
                         //Sign in success
                         val user = auth.currentUser
 
-                        val intent = Intent(this, HomePage::class.java)
+                        val intent = Intent(this, SplashScreenActivity::class.java)
                         startActivity(intent)
 
                         Toast.makeText(baseContext, "Successfully Logged In", Toast.LENGTH_LONG)

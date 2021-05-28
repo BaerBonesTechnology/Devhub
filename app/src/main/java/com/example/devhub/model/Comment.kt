@@ -1,6 +1,4 @@
-package com.example.devhub.com.example.devhub.model
-
-import com.example.devhub.model.Users
+package com.example.devhub.model
 
 data class Comment (
     var user: Users? = null,
