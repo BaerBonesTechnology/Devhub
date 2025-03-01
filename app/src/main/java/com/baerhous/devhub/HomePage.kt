@@ -16,8 +16,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.baerhous.devhub.PostAdapter
 import com.baerhous.devhub.data.Library.ActionLibrary
+import com.baerhous.devhub.databinding.ActivityHomePageBinding
 import com.baerhous.devhub.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -27,14 +27,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.activity_clicked__post.*
-import kotlinx.android.synthetic.main.activity_home_page.*
-import kotlinx.android.synthetic.main.activity_home_page.LogoutBtn
-import kotlinx.android.synthetic.main.activity_home_page.homeLogo
-import kotlinx.android.synthetic.main.activity_home_page.view.*
-import kotlinx.android.synthetic.main.activity_status_post.*
-import kotlinx.android.synthetic.main.item_post.*
-import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,12 +57,13 @@ private lateinit var fiam: FirebaseInstallations
 
 
 open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
+
+    private lateinit var binding: ActivityHomePageBinding
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_page)
-
-
+        binding = ActivityHomePageBinding.inflate(layoutInflater)
 
         // make a query to firestore to gather posts
         fcm = FirebaseMessaging.getInstance()
@@ -86,8 +79,8 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
                 Log.i(TAG, " signed in user: $signedInUser")
                 posts = mutableListOf()
                 adapter = PostAdapter(this, posts, this, signedInUser!!.username)
-                postFeed.adapter = adapter
-                postFeed.layoutManager = LinearLayoutManager(this)
+                binding.postFeed.adapter = adapter
+                binding.postFeed.layoutManager = LinearLayoutManager(this)
 
                 postsRef.addSnapshotListener { snapshot, exception ->
                     if (exception != null || snapshot == null) {
@@ -118,22 +111,22 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
         storage = FirebaseStorage.getInstance().reference
 
-        newPostString.setOnFocusChangeListener { _, hasFocus ->
+                binding.newPostString.setOnFocusChangeListener { _, hasFocus ->
             if(hasFocus){
-                photoButton.isGone = false
+                binding.photoButton.isGone = false
                 Log.i("NEW POST ACTIVITY", "Text Focused")
             }else{
-                photoButton.isGone = true
+                binding.photoButton.isGone = true
                 Log.i("NEW POST ACTIVITY", "Text unfocused")
 
             }
         }
 
-        Post_Button.setOnClickListener {
-            Post_Button.isEnabled = false
+                binding.PostButton.setOnClickListener {
+            binding.PostButton.isEnabled = false
             val photoRef = storage.child("images/${System.currentTimeMillis()}-photo.jpg")
 
-            if (photo_uri == null && newPostString.text.isBlank()) {
+            if (photo_uri == null && binding.newPostString.text.isBlank()) {
                 Toast.makeText(this, "Please post content", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             } else if (signedInUser == null) {
@@ -155,7 +148,7 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
                             val posts = Posts(
                                     System.currentTimeMillis(),
-                                    newPostString.editableText.toString(),
+                                binding.newPostString.editableText.toString(),
                                     photoDownloadTask.result.toString(),
                                     signedInUser
                             )
@@ -219,7 +212,7 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
                 val posts = Posts(
                         System.currentTimeMillis(),
-                        newPostString.editableText.toString(),
+                    binding.newPostString.editableText.toString(),
                         url,
                         signedInUser
                 )
@@ -269,13 +262,13 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
                         }
             }
-            newPostString.editableText.clear()
-            Post_Button.isEnabled = true
-            postImage.setImageURI(null)
-            postImage.isVisible = false
+            binding.newPostString.editableText.clear()
+            binding.PostButton.isEnabled = true
+            binding.postImage.setImageURI(null)
+            binding.postImage.isVisible = false
         }
 
-        photoButton.setOnClickListener {
+                binding.photoButton.setOnClickListener {
             Log.i(TAG, "Open up gallery on device")
 
             val galleryImageIntent = Intent(Intent.ACTION_GET_CONTENT)
@@ -288,7 +281,7 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
 
 //Adds button to log out (Temporary while building)
-        LogoutBtn.setOnClickListener {
+                binding.LogoutBtn.setOnClickListener {
 
             Firebase.auth.signOut()
 
@@ -301,21 +294,21 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
         }
 
-        HPPost_Btn.setOnClickListener {
+                binding.HPPostBtn.setOnClickListener {
             val intent = Intent(this, StatusPost::class.java)
             startActivity(intent)
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
 
         }
 
-        homeLogo.setOnClickListener {
+                binding.homeLogo.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
 
         }
 
-        HPnav_Profile.setOnClickListener {
+                binding.HPnavProfile.setOnClickListener {
             val intent = Intent(this, ProfilePage::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
@@ -324,21 +317,21 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
 
         }
-        HPnav_Home.setOnClickListener {
+                binding.HPnavHome.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
 
         }
 
-        HPnav_Coding.setOnClickListener {
+                binding.HPnavCoding.setOnClickListener {
             val intent = Intent(this, CodingNotes::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             startActivity(intent)
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.fade_out)
 
         }
-        HPnav_Notifs.setOnClickListener {
+                binding.HPnavNotifs.setOnClickListener {
             val intent = Intent(this, NotificationPage::class.java)
             intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
             startActivity(intent)
@@ -349,7 +342,7 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
             .addOnFailureListener { exception ->
                 Log.i(TAG, "Failure to fetch signed in user", exception)
             }
-
+        setContentView(binding.root)
     }
 
 
@@ -362,7 +355,7 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
 
         val postUpdate = firestoreDB.collection("Posts").document(post.PostId).collection("LikedBy")
 
-        firestoreDB.collection("Users").document(auth.currentUser.uid).get().addOnCompleteListener{
+        firestoreDB.collection("Users").document(auth.currentUser?.uid ?: "").get().addOnCompleteListener{
             if(it.isSuccessful){
                 signedInUser = it.result.toObject(Users::class.java)
             }
@@ -438,8 +431,8 @@ open class HomePage : AppCompatActivity(), PostAdapter.DootsClickListener {
         if (requestCode == PICK_PHOTO_CODE)
             if (resultCode == Activity.RESULT_OK) {
                 photo_uri = data?.data
-                postImage.setImageURI(photo_uri)
-                postImage.isGone = false
+                binding.postImage.setImageURI(photo_uri)
+                binding.postImage.isGone = false
 
             } else {
                 Log.i(TAG, "Gallery Closed user cancelled")

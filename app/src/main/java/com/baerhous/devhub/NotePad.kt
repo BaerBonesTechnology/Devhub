@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.baerhous.devhub.databinding.ActivityNotePadBinding
 import com.baerhous.devhub.model.Notes
 import com.baerhous.devhub.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_note_pad.*
 
 private var signedInUser: Users? = null
 private const val TAG = "Note Post Activity"
@@ -19,16 +19,18 @@ private const val EXTRA_USERNAME = "EXTRA_USERNAME"
 
 
 class NotePad : AppCompatActivity() {
+    private lateinit var binding: ActivityNotePadBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_note_pad)
 
+        binding = ActivityNotePadBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
         //TODO: Get signed in user and username
         db.collection("Users")
-                .document(auth.currentUser.uid)
+                .document(auth.currentUser?.uid ?: "")
                 .get()
                 .addOnSuccessListener { userSnapshot ->
                     signedInUser = userSnapshot.toObject(Users::class.java)
@@ -43,25 +45,25 @@ class NotePad : AppCompatActivity() {
 
 
 
-        cancelButton.setOnClickListener {
+        binding.cancelButton.setOnClickListener {
             val intent = Intent(this, CodingNotes::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             startActivity(intent)
         }
-        saveButton.setOnClickListener {
+        binding.saveButton.setOnClickListener {
 
-            if(!saveButton.isEnabled){
+            if(! binding.saveButton.isEnabled){
                 Toast.makeText(baseContext, "Please wait for note to finish saving", Toast.LENGTH_SHORT).show()
             }
-            saveButton.isEnabled = false
+            binding.saveButton.isEnabled = false
 
 
 
             val notes = Notes(
                     signedInUser,
-                    NoteTitle.editableText.toString(),
+                binding.NoteTitle.editableText.toString(),
                     System.currentTimeMillis(),
-                    noteContent.editableText.toString()
+                binding.noteContent.editableText.toString()
             )
 
             db.collection("notes")
@@ -89,5 +91,7 @@ class NotePad : AppCompatActivity() {
 
         }
     }
-}
+        setContentView(binding.root)
+    }
+
 }

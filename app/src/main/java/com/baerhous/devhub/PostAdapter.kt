@@ -51,11 +51,11 @@ class PostAdapter(val context: Context, private var posts: List<Posts>, private 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false)
+        binding = ItemPostBinding.inflate(LayoutInflater.from(context), parent, false)
 
 
 
-        return ViewHolder(view)
+        return ViewHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

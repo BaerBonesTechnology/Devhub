@@ -3,6 +3,7 @@ package com.baerhous.devhub
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateUtils
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -29,9 +30,9 @@ class NotesAdapter(val context: Context, private val Notes: List<Notes>, private
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = binding.root
+        val binding = NotesAdapterBinding.inflate(LayoutInflater.from(context), parent, false)
 
-        return ViewHolder(view)
+        return ViewHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

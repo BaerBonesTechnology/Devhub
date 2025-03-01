@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.baerhous.devhub.databinding.ActivityMainBinding
 import com.baerhous.devhub.model.Notification
 import com.baerhous.devhub.model.Users
 import com.baerhous.devhub.ui.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 private const val TAG = "AccountActivity"
@@ -21,18 +21,26 @@ private lateinit var auth:FirebaseAuth
 private lateinit var firebaseDB: FirebaseFirestore
 
 class SignUp : AppCompatActivity() {
-
+    private lateinit var binding: ActivityMainBinding
 
         override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
 
         auth = FirebaseAuth.getInstance()
+
+        if(auth.currentUser != null){
+            val intent = Intent(this, HomePage::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         firebaseDB = FirebaseFirestore.getInstance()
-        RegisterButton.setOnClickListener {
-            val username = UsernameView.text.toString()
-            val email = EmailView.text.toString()
-            val password = PasswordView.text.toString()
+            binding.RegisterButton.setOnClickListener {
+                val username = binding.UsernameView.text.toString()
+            val email = binding.EmailView.text.toString()
+            val password = binding.PasswordView.text.toString()
 
 
             auth.createUserWithEmailAndPassword(email,password)
@@ -53,7 +61,7 @@ class SignUp : AppCompatActivity() {
                                 Toast.LENGTH_SHORT).show()
 
 
-                        val intent = Intent(this, SplashScreenActivity::class.java)
+                        val intent = Intent(this, HomePage::class.java)
 
                         startActivity(intent)
 
@@ -79,14 +87,13 @@ class SignUp : AppCompatActivity() {
 
 
         }
-        SwitchToLogin.setOnClickListener{
-
+        binding.SwitchToLogin.setOnClickListener{
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
 
         }
 
-
+        setContentView(binding.root)
     }
 
 }

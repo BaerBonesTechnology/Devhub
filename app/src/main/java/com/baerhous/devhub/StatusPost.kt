@@ -7,13 +7,13 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.baerhous.devhub.databinding.ActivityStatusPostBinding
 import com.baerhous.devhub.model.Posts
 import com.baerhous.devhub.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.activity_status_post.*
 
 private const val TAG = "PostActivity"
 private lateinit var auth: FirebaseAuth
@@ -26,10 +26,12 @@ private var url = ""
 
 
 class StatusPost : AppCompatActivity() {
+    private lateinit var binding: ActivityStatusPostBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_status_post)
+
+        binding = ActivityStatusPostBinding.inflate(layoutInflater)
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
@@ -37,7 +39,7 @@ class StatusPost : AppCompatActivity() {
 
 
         db.collection("Users")
-            .document(auth.currentUser.uid)
+            .document(auth.currentUser?.uid ?: "")
             .get()
             .addOnSuccessListener { userSnapshot ->
                 signedInUser = userSnapshot.toObject(Users::class.java)
@@ -48,7 +50,7 @@ class StatusPost : AppCompatActivity() {
                 Log.i(TAG, "Failure to fetch signed in user", exception)
             }
 
-        pictureAddButton.setOnClickListener {
+        binding.pictureAddButton.setOnClickListener {
             Log.i(TAG, "Open up gallery on device")
 
             val galleryImageIntent = Intent(Intent.ACTION_GET_CONTENT)
@@ -62,10 +64,10 @@ class StatusPost : AppCompatActivity() {
 
 
 
-        status_post_btn.setOnClickListener {
+        binding.statusPostBtn.setOnClickListener {
             val photoRef = storage.child("images/${System.currentTimeMillis()}-photo.jpg")
 
-            if (photo_uri == null && postEdit.text.isBlank()) {
+            if (photo_uri == null &&  binding.postEdit.text.isBlank()) {
                 Toast.makeText(this, "Please post content", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             } else if (signedInUser == null) {
@@ -87,7 +89,7 @@ class StatusPost : AppCompatActivity() {
 
                         val posts = Posts(
                             System.currentTimeMillis(),
-                            postEdit.editableText.toString(),
+                            binding.postEdit.editableText.toString(),
                             photoDownloadTask.result.toString(),
                             signedInUser
                         )
@@ -130,7 +132,7 @@ class StatusPost : AppCompatActivity() {
 
 
                                     db.collection("Users")
-                                        .document(auth.currentUser.uid)
+                                        .document(auth.currentUser?.uid ?: "")
                                         .set(userNewInfo)
                                         .addOnSuccessListener {
                                             Log.d(
@@ -155,7 +157,7 @@ class StatusPost : AppCompatActivity() {
 
                 val posts = Posts(
                     System.currentTimeMillis(),
-                    postEdit.editableText.toString(),
+                    binding.postEdit.editableText.toString(),
                     url,
                     signedInUser
                 )
@@ -189,7 +191,7 @@ class StatusPost : AppCompatActivity() {
 
 
                             db.collection("Users")
-                                .document(auth.currentUser.uid)
+                                .document(auth.currentUser?.uid ?: "")
                                 .set(userNewInfo)
                                 .addOnSuccessListener {
                                     Log.d(
@@ -215,6 +217,7 @@ class StatusPost : AppCompatActivity() {
 
 
         }
+        setContentView(binding.root)
     }
 
             override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -222,7 +225,7 @@ class StatusPost : AppCompatActivity() {
                 if (requestCode == PICK_PHOTO_CODE)
                     if (resultCode == Activity.RESULT_OK) {
                         photo_uri = data?.data
-                        imageView.setImageURI(photo_uri)
+                        binding.imageView.setImageURI(photo_uri)
 
                     } else {
                         Log.i(TAG, "Gallery Closed user cancelled")

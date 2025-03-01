@@ -1,36 +1,27 @@
 {
   "project_info": {
-    "project_number": "430526754321",
-    "project_id": "devhub-c95ad",
-    "storage_bucket": "devhub-c95ad.appspot.com"
+    "project_number": "328674200719",
+    "firebase_url": "https://devhub-eff93-default-rtdb.firebaseio.com",
+    "project_id": "devhub-eff93",
+    "storage_bucket": "devhub-eff93.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:430526754321:android:22d2e849fe729d46b18bb0",
+        "mobilesdk_app_id": "1:328674200719:android:b67bb6d3ec0bc7ef36b4fa",
         "android_client_info": {
           "package_name": "com.baerhous.devhub"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "430526754321-ou07mqj9q1mceb9sasen7o1djfh05glr.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDIuBqL7_8P1r2zWu530e4xnWPoQ83SKy0"
+          "current_key": "AIzaSyBQ7m2Li70AwV17lpSbM27Vr6sRJuuRmf4"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "430526754321-ou07mqj9q1mceb9sasen7o1djfh05glr.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

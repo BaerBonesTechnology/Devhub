@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.baerhous.devhub.NotesAdapter
+import com.baerhous.devhub.databinding.ActivityCodingNotesBinding
+import com.baerhous.devhub.databinding.NotesAdapterBinding
 import com.baerhous.devhub.model.Notes
 import com.baerhous.devhub.model.Users
 import com.google.firebase.auth.FirebaseAuth
@@ -32,10 +34,13 @@ private const val TAG = "NotesActivity"
 
 
 class CodingNotes : AppCompatActivity(), NotesAdapter.ClickListener {
+    private lateinit var binding: ActivityCodingNotesBinding
+
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_coding_notes)
+        binding = ActivityCodingNotesBinding.inflate(layoutInflater)
 
         auth = FirebaseAuth.getInstance()
 
@@ -46,8 +51,8 @@ class CodingNotes : AppCompatActivity(), NotesAdapter.ClickListener {
         //TODO: Create Adapter
         adapter = NotesAdapter(this, notes, this)
         //TODO: Bind Adapter and layout manager to the RV
-        NotesView.adapter = adapter
-        NotesView.layoutManager = LinearLayoutManager(this)
+        binding.NotesView.adapter = adapter
+        binding.NotesView.layoutManager = LinearLayoutManager(this)
 
         val username = intent.getStringExtra(EXTRA_USERNAME)
 
@@ -99,37 +104,37 @@ class CodingNotes : AppCompatActivity(), NotesAdapter.ClickListener {
 
 
 
-        addNotesButton.setOnClickListener {
+        binding.addNotesButton.setOnClickListener {
             val intent = Intent(this, NotePad::class.java)
             startActivity(intent)
         }
 
-        CNPost_Btn.setOnClickListener {
+        binding.CNPostBtn.setOnClickListener {
             val intent = Intent(this, StatusPost::class.java)
             startActivity(intent)
         }
-        CNnav_Profile.setOnClickListener {
+        binding.CNnavProfile.setOnClickListener {
             val intent = Intent(this, ProfilePage::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser.username)
             intent.putExtra(EXTRA_USER_ID, signedInUser.userID)
             startActivity(intent)
         }
-        CNnav_Coding.setOnClickListener {
+        binding.CNnavCoding.setOnClickListener {
             val intent = Intent(this, CodingNotes::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser.username)
             startActivity(intent)
         }
-        CNnav_Notifs.setOnClickListener {
+        binding.CNnavNotifs.setOnClickListener {
             val intent = Intent(this, NotificationPage::class.java)
             intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
             startActivity(intent)
         }
-        CNnav_Home.setOnClickListener {
+        binding.CNnavHome.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
 
-
+        setContentView(binding.root)
     }
 
     override fun clickedItem(Notes: Notes, textView: TextView) {

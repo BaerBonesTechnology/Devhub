@@ -6,6 +6,7 @@
 
 
     <application
+        android:name=".DevhubApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
@@ -29,15 +30,6 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
             </intent-filter>
         </service>
-
-
-        <activity android:name=".SplashScreenActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".NotificationPage"
             android:theme="@style/Theme.Design.NoActionBar" />
@@ -67,9 +59,12 @@
             android:theme="@style/Theme.Design.NoActionBar" />
         <activity
             android:name=".SignUp"
+            android:exported="true"
             android:theme="@style/Theme.Design.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 

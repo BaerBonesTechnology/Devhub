@@ -12,18 +12,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.baerhous.devhub.PostAdapter
 import com.baerhous.devhub.data.Library.ActionLibrary
+import com.baerhous.devhub.databinding.ActivityProfileBinding
 import com.baerhous.devhub.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_home_page.*
-import kotlinx.android.synthetic.main.activity_home_page.LogoutBtn
-import kotlinx.android.synthetic.main.activity_home_page.homeLogo
-import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.activity_profile.postFeed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,10 +40,12 @@ private var username:String? = ""
 
 class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
 {
+    private lateinit var binding: ActivityProfileBinding
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+        binding = ActivityProfileBinding.inflate(layoutInflater)
 
         userID = intent.getStringExtra(EXTRA_USER_ID)
         username = intent.getStringExtra(EXTRA_USERNAME)
@@ -57,7 +54,7 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
         auth = FirebaseAuth.getInstance()
 
 
-        usernameView.text = username
+        binding.usernameView.text = username
 
         firestoreDB.collection("Users")
             .document(auth.currentUser!!.uid)
@@ -67,8 +64,8 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
 
                 posts = mutableListOf()
                 adapter = PostAdapter(this, posts, this, signedInUser!!.username)
-                postFeed.adapter = adapter
-                postFeed.layoutManager = LinearLayoutManager(this)
+                binding.postFeed.adapter = adapter
+                binding.postFeed.layoutManager = LinearLayoutManager(this)
 
                 Log.i(TAG, " signed in user: $signedInUser")
 
@@ -104,9 +101,9 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
                                 }
                             }
 
-                            usernameView.text = "_" + username
-                            bioTxtView.text = profileUser?.bio
-                            editProfileBtn.isGone = true
+                            binding.usernameView.text = "_" + username
+                            binding.bioTxtView.text = profileUser?.bio
+                            binding.editProfileBtn.isGone = true
 
                         }
                         .addOnFailureListener { exception ->
@@ -141,8 +138,8 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
                         }
                     }
 
-                    usernameView.text = "_" + username
-                    bioTxtView.text = signedInUser?.bio
+                    binding.usernameView.text = "_" + username
+                    binding.bioTxtView.text = signedInUser?.bio
 
                 }
 
@@ -158,7 +155,7 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
 
 
 //Adds button to log out (Temporary while building)
-        LogoutBtn.setOnClickListener {
+        binding.LogoutBtn.setOnClickListener {
 
             Firebase.auth.signOut()
 
@@ -169,7 +166,7 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
             Toast.makeText(baseContext, "You have been logged out", Toast.LENGTH_LONG).show()
         }
 
-        PPPost_Btn.setOnClickListener {
+        binding.PPPostBtn.setOnClickListener {
             //TODO: create UI for adding post
             val intent = Intent(this, StatusPost::class.java)
             startActivity(intent)
@@ -177,38 +174,40 @@ class ProfilePage : AppCompatActivity(), PostAdapter.DootsClickListener
             //TODO: return to home page
         }
 
-        homeLogo.setOnClickListener {
+        binding.homeLogo.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
 
-        PPnav_ProfileHome.setOnClickListener {
+        binding.PPnavProfileHome.setOnClickListener {
             val intent = Intent(this, ProfilePage::class.java)
             intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             startActivity(intent)
 
         }
-        PPnav_HomeHome.setOnClickListener {
+        binding.PPnavHomeHome.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
-        PPnav_Coding.setOnClickListener {
+        binding.PPnavCoding.setOnClickListener {
             val intent = Intent(this, CodingNotes::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             startActivity(intent)
         }
-        PPnav_Notifs.setOnClickListener {
+        binding.PPnavNotifs.setOnClickListener {
             val intent = Intent(this, NotificationPage::class.java)
             intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
             startActivity(intent)
         }
 
-        editProfileBtn.setOnClickListener{
+        binding.editProfileBtn.setOnClickListener{
             val intent = Intent(this, ProfileSettings::class.java)
             startActivity(intent)
 
         }
+
+        setContentView(binding.root)
     }
 
     @SuppressLint("SetTextI18n")

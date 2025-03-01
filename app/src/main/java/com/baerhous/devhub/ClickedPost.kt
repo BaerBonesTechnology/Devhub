@@ -10,18 +10,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.baerhous.devhub.CommentsAdapter
+import com.baerhous.devhub.databinding.ActivityClickedPostBinding
 import com.bumptech.glide.Glide
 import com.baerhous.devhub.model.Comment
+import com.baerhous.devhub.model.Notification
 import com.baerhous.devhub.model.Posts
+import com.baerhous.devhub.model.PushNotifications
+import com.baerhous.devhub.model.UserNotification
 import com.baerhous.devhub.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_clicked__post.*
-import kotlinx.android.synthetic.main.item_post.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,13 +45,13 @@ private var comment: Comment? = null
 
 
 class ClickedPost : AppCompatActivity() {
+
+    private lateinit var binding: ActivityClickedPostBinding
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_clicked__post)
-
-
-
+        binding = ActivityClickedPostBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
@@ -74,13 +75,13 @@ class ClickedPost : AppCompatActivity() {
             .addOnSuccessListener{ postSnapshot->
                 post = postSnapshot.toObject(Posts::class.java)
                 if(post != null) {
-                    usernameViewExpanded.text = "_${post?.user?.username}"
-                    postContextView.text = post?.description
+                    binding.usernameViewExpanded.text = "_${post?.user?.username}"
+                    binding.postContextView.text = post?.description
                     if (post?.image_url == "") {
-                        postImageView.isGone = true
+                        binding.postImageView.isGone = true
                     } else {
-                        Glide.with(this).load(post?.image_url).into(postImageView)
-                        postImageView.isGone = false
+                        Glide.with(this).load(post?.image_url).into(binding.postImageView)
+                        binding.postImageView.isGone = false
                     }
 
                     db.collection("Posts").document(postId).addSnapshotListener { snapshot, exception ->
@@ -92,24 +93,24 @@ class ClickedPost : AppCompatActivity() {
                         postRef.collection("LikeBy").get().addOnSuccessListener { query ->
                             if (query != null && query.size() > 0) {
 
-                                dootsCount.text = "${query.size()} doots"
-                                dootsCount.isGone = false
+                                binding.dootsCount.text = "${query.size()} doots"
+                                binding.dootsCount.isGone = false
 
 
 
 
                                 postRef.collection("LikedBy").document(signedInUser!!.username).get()
                                     .addOnSuccessListener {
-                                        doot_btn.colorFilter =
+                                        binding.dootBtn.colorFilter =
                                             LightingColorFilter(Color.BLACK, Color.GREEN)
                                     }.addOnFailureListener {
-                                        doot_btn.colorFilter =
+                                        binding.dootBtn.colorFilter =
                                             LightingColorFilter(Color.BLACK, Color.BLACK)
                                     }
 
                             }else{
-                                dootsCount.isGone = true
-                                doot_btn.colorFilter = LightingColorFilter(Color.BLACK, Color.BLACK)
+                                binding.dootsCount.isGone = true
+                                binding.dootBtn.colorFilter = LightingColorFilter(Color.BLACK, Color.BLACK)
                             }
 
                         }.addOnFailureListener {
@@ -130,8 +131,8 @@ class ClickedPost : AppCompatActivity() {
 
         comments = mutableListOf()
         adapter = CommentsAdapter(this, comments)
-        commentView.adapter = adapter
-        commentView.layoutManager = LinearLayoutManager(this)
+        binding.commentView.adapter = adapter
+        binding.commentView.layoutManager = LinearLayoutManager(this)
 
 
 
@@ -175,17 +176,17 @@ class ClickedPost : AppCompatActivity() {
 
 
 
-        usernameViewExpanded.setOnClickListener {
+        binding.usernameViewExpanded.setOnClickListener {
             val intent = Intent(this, ProfilePage::class.java)
             intent.putExtra(EXTRA_USERNAME, post?.user?.username)
             startActivity(intent)
         }
 
         //comment button logic
-        comment_Btn.setOnClickListener {
-            comment_Btn.isEnabled = false
+        binding.commentBtn.setOnClickListener {
+            binding.commentBtn.isEnabled = false
 
-            val newComment = Comment(signedInUser, System.currentTimeMillis(), commentSend.editableText.toString(), 0)
+            val newComment = Comment(signedInUser, System.currentTimeMillis(), binding.commentSend.editableText.toString(), 0)
 
             val postID = intent.getStringExtra(EXTRA_POST_ID)
 
@@ -230,7 +231,7 @@ class ClickedPost : AppCompatActivity() {
             }
         }
 
-        doot_btn.setOnClickListener {
+        binding.dootBtn.setOnClickListener {
 
             val postUpdate = db.collection("Posts").document(postId).collection("LikedBy")
 
@@ -264,7 +265,7 @@ class ClickedPost : AppCompatActivity() {
         }
 
 
-        LogoutBtn.setOnClickListener {
+        binding.LogoutBtn.setOnClickListener {
 
             Firebase.auth.signOut()
 
@@ -275,35 +276,35 @@ class ClickedPost : AppCompatActivity() {
             Toast.makeText(baseContext, "You have been logged out", Toast.LENGTH_LONG).show()
         }
 
-        CPPost_Btn.setOnClickListener {
+        binding.CPPostBtn.setOnClickListener {
             val intent = Intent(this, StatusPost::class.java)
             startActivity(intent)
         }
 
-        homeLogo.setOnClickListener {
+        binding.homeLogo.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
 
-        CPnav_Profile.setOnClickListener {
+        binding.CPnavProfile.setOnClickListener {
             val intent = Intent(this, ProfilePage::class.java)
             intent.putExtra(EXTRA_USERNAME, users?.username)
             intent.putExtra(EXTRA_USER_ID, users?.userID)
             startActivity(intent)
 
         }
-        CPnav_Home.setOnClickListener {
+        binding.CPnavHome.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
 
-        CPnav_Notifs.setOnClickListener {
+        binding.CPnavNotifs.setOnClickListener {
             val intent = Intent(this, NotificationPage::class.java)
             intent.putExtra(EXTRA_USERNAME, users?.userID)
             startActivity(intent)
         }
 
-
+        setContentView(R.layout.activity_clicked__post)
     }
 
     private fun sendNotifications(notification: PushNotifications) = CoroutineScope(Dispatchers.IO).launch {

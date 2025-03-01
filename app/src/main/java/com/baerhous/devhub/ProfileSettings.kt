@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.baerhous.devhub.databinding.ActivityProfileSettingsBinding
 import com.baerhous.devhub.model.Posts
 import com.baerhous.devhub.model.Users
 import com.google.firebase.auth.FirebaseAuth
@@ -19,9 +20,13 @@ private lateinit var db: FirebaseFirestore
 private const val TAG: String = "PROFILE_UPDATE"
 private const val EXTRA_USERNAME = "EXTRA_USERNAME"
 class ProfileSettings : AppCompatActivity() {
+
+    private lateinit var binding: ActivityProfileSettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile_settings)
+
+        binding = ActivityProfileSettingsBinding.inflate(layoutInflater)
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
@@ -32,9 +37,9 @@ class ProfileSettings : AppCompatActivity() {
                 signedInUser = userSnapshot.toObject(Users::class.java)
             }
 
-        save_Button.setOnClickListener {
+        binding.saveButton.setOnClickListener {
 
-            save_Button.isEnabled = false
+            binding.saveButton.isEnabled = false
 
             db.collection("Posts")
                 .whereEqualTo("user.userID", signedInUser?.userID)
@@ -46,7 +51,7 @@ class ProfileSettings : AppCompatActivity() {
                     postRef.forEach{ docSnap ->
                         val post = docSnap.toObject(Posts::class.java)
 
-                        post?.user?.username = usernameChangeTxt.editableText.toString()
+                        post?.user?.username =  binding.usernameChangeTxt.editableText.toString()
 
                         db.collection("Posts").document(docSnap.id).set(post!!)
                     }
@@ -56,11 +61,11 @@ class ProfileSettings : AppCompatActivity() {
                 }
 
 
-                if (usernameChangeTxt.editableText.isNotBlank() && usernameChangeTxt.editableText.toString() != signedInUser?.username) {
-                    signedInUser?.username = usernameChangeTxt.editableText.toString()
+                if ( binding.usernameChangeTxt.editableText.isNotBlank() &&  binding.usernameChangeTxt.editableText.toString() != signedInUser?.username) {
+                    signedInUser?.username =  binding.usernameChangeTxt.editableText.toString()
                 }
-                if (bioChangeTxt.editableText.isNotBlank() && bioChangeTxt.editableText.toString() != signedInUser?.bio) {
-                    signedInUser?.bio = bioChangeTxt.editableText.toString()
+                if ( binding.bioChangeTxt.editableText.isNotBlank() &&  binding.bioChangeTxt.editableText.toString() != signedInUser?.bio) {
+                    signedInUser?.bio =  binding.bioChangeTxt.editableText.toString()
                 }
 
                 db.collection("Users").document(auth.currentUser!!.uid)
@@ -83,6 +88,6 @@ class ProfileSettings : AppCompatActivity() {
             startActivity(intent)
         }
 
-
+        setContentView(binding.root)
     }
 }

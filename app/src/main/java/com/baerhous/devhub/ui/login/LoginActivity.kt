@@ -2,32 +2,34 @@ package com.baerhous.devhub.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.baerhous.devhub.R
-import com.baerhous.devhub.SplashScreenActivity
+import com.baerhous.devhub.HomePage
+import com.baerhous.devhub.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_login.*
-
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
-
+    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+
         auth = FirebaseAuth.getInstance()
 
-            loginBtn.setOnClickListener {
 
-                val email = emailLogin.text.toString()
-                val password = passwordLogin.text.toString()
 
-                if (TextUtils.isEmpty(emailLogin.text.toString()) || TextUtils.isEmpty(passwordLogin.text.toString())) {
+            binding.loginBtn.setOnClickListener {
+
+                val email = binding.emailLogin.text.toString()
+                val password = binding.passwordLogin.text.toString()
+
+                if (TextUtils.isEmpty(binding.emailLogin.text.toString()) || TextUtils.isEmpty(binding.passwordLogin.text.toString())) {
                     //if user and/or password is null send toast
                     Toast.makeText(baseContext, "please fill in all the fields", Toast.LENGTH_LONG).show()
                 }
@@ -38,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
                         //Sign in success
                         val user = auth.currentUser
 
-                        val intent = Intent(this, SplashScreenActivity::class.java)
+                        val intent = Intent(this, HomePage::class.java)
                         startActivity(intent)
 
                         Toast.makeText(baseContext, "Successfully Logged In", Toast.LENGTH_LONG)
@@ -53,6 +55,7 @@ class LoginActivity : AppCompatActivity() {
 
                 }
             }
-        }
+        setContentView(binding.root)
+    }
     }
 

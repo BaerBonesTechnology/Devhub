@@ -6,14 +6,12 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.baerhous.devhub.NotificationsAdapter
+import com.baerhous.devhub.databinding.ActivityNotificationsBinding
 import com.baerhous.devhub.model.UserNotification
 import com.baerhous.devhub.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.activity_home_page.*
-import kotlinx.android.synthetic.main.activity_notifications.*
 
 
 
@@ -33,6 +31,7 @@ private const val EXTRA_USER_ID = "EXTRA_USERID"
 
 
 class NotificationPage : AppCompatActivity(), NotificationsAdapter.GoToPost {
+    private lateinit var binding: ActivityNotificationsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +44,9 @@ class NotificationPage : AppCompatActivity(), NotificationsAdapter.GoToPost {
         notifications = mutableListOf()
 
         adapter = NotificationsAdapter(this, notifications, this)
-        notifAdapter.adapter = adapter
+        binding.notifAdapter.adapter = adapter
 
-        notifAdapter.layoutManager = LinearLayoutManager(this)
+        binding.notifAdapter.layoutManager = LinearLayoutManager(this)
 
 
         Log.i(TAG, "$userID is the user ID")
@@ -91,29 +90,29 @@ class NotificationPage : AppCompatActivity(), NotificationsAdapter.GoToPost {
 
 
 
-        this.NPost_Btn.setOnClickListener {
+        binding.NPostBtn.setOnClickListener {
             val intent = Intent(this, StatusPost::class.java)
             startActivity(intent)
         }
 
-        this.Nnav_Profile.setOnClickListener {
+        binding.NnavProfile.setOnClickListener {
             val intent = Intent(this, ProfilePage::class.java)
             intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             startActivity(intent)
 
         }
-        this.Nnav_Home.setOnClickListener {
+        binding.NnavHome.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
 
-        this.Nnav_Coding.setOnClickListener {
+        binding.NnavCoding.setOnClickListener {
             val intent = Intent(this, CodingNotes::class.java)
             intent.putExtra(EXTRA_USERNAME, signedInUser?.username)
             startActivity(intent)
         }
-        this.Nnav_Notifs.setOnClickListener {
+        binding.NnavNotifs.setOnClickListener {
             val intent = Intent(this, NotificationPage::class.java)
             intent.putExtra(EXTRA_USER_ID, signedInUser?.userID)
             startActivity(intent)
