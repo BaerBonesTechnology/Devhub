@@ -1,4 +1,4 @@
-package com.example.devhub
+package com.baerhous.devhub
 
 import org.junit.Test
 
